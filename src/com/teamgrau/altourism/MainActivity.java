@@ -69,7 +69,7 @@ public class MainActivity extends MapActivity implements
 	    controller.setZoom(18);
 	    
 	    List<Overlay> mapOverlays = mapView.getOverlays();
-	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	    Drawable drawable = this.getResources().getDrawable(R.drawable.altourism_user_position);
 	    MyOverlay overlay = new MyOverlay(drawable, this);
 	    
 	    GeoPoint point = new GeoPoint(52521339,13411018);
