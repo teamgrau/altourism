@@ -42,6 +42,7 @@ public class MainActivity extends MapActivity implements
 	@Override
 	protected void onPause() {
 		super.onPause();
+		//pimmelkiste
 	    locationOverlay.disableMyLocation();
 		
 	}
