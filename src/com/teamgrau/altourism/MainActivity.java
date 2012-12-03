@@ -1,6 +1,9 @@
 package com.teamgrau.altourism;
 
+import java.util.List;
+
 import android.app.ActionBar;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
@@ -15,8 +18,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class MainActivity extends FragmentActivity implements
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
+
+public class MainActivity extends MapActivity implements
 		ActionBar.OnNavigationListener {
+
+	private MyLocationOverlay locationOverlay = null;
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+	}
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -25,11 +43,29 @@ public class MainActivity extends FragmentActivity implements
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
 	@Override
+	protected boolean isRouteDisplayed() {
+	    return false;
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		MapView mapView = (MapView) findViewById(R.id.mapview);
+	    mapView.setBuiltInZoomControls(true);
+	    
+	    List<Overlay> mapOverlays = mapView.getOverlays();
+	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+	    MyOverlay overlay = new MyOverlay(drawable, this);
+	    
+	    GeoPoint point = new GeoPoint(19240000,-99120000);
+	    OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
+	    
+	    overlay.addOverlay(overlayitem);
+	    mapOverlays.add(overlay);
 
-		// Set up the action bar to show a dropdown list.
+		/*// Set up the action bar to show a dropdown list.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -42,7 +78,7 @@ public class MainActivity extends FragmentActivity implements
 						android.R.id.text1, new String[] {
 								getString(R.string.title_section1),
 								getString(R.string.title_section2),
-								getString(R.string.title_section3), }), this);
+								getString(R.string.title_section3), }), this);*/
 	}
 
 	@Override
@@ -76,8 +112,8 @@ public class MainActivity extends FragmentActivity implements
 		Bundle args = new Bundle();
 		args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 		fragment.setArguments(args);
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.container, fragment).commit();
+		//getSupportFragmentManager().beginTransaction()
+		//		.replace(R.id.container, fragment).commit();
 		return true;
 	}
 
