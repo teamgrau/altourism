@@ -17,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
@@ -29,10 +31,18 @@ public class MainActivity extends MapActivity implements
 		ActionBar.OnNavigationListener {
 
 	private MyLocationOverlay locationOverlay = null;
+	private MapView mapView = null;
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
+	    locationOverlay.enableMyLocation();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+	    locationOverlay.disableMyLocation();
 		
 	}
 
@@ -52,20 +62,30 @@ public class MainActivity extends MapActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		MapView mapView = (MapView) findViewById(R.id.mapview);
+		mapView = (MapView) findViewById(R.id.mapview);
 	    mapView.setBuiltInZoomControls(true);
+	    mapView.setSatellite(true);
+	    MapController controller = mapView.getController();
+	    controller.animateTo(new GeoPoint(52521339,13411018));
+	    controller.setZoom(18);
 	    
 	    List<Overlay> mapOverlays = mapView.getOverlays();
 	    Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
 	    MyOverlay overlay = new MyOverlay(drawable, this);
 	    
-	    GeoPoint point = new GeoPoint(19240000,-99120000);
-	    OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
+	    GeoPoint point = new GeoPoint(52521339,13411018);
+	    OverlayItem overlayitem = new OverlayItem(point, "Tach auch!", "I'm on Alexanderplatz");
 	    
 	    overlay.addOverlay(overlayitem);
 	    mapOverlays.add(overlay);
+	    
+	    locationOverlay = new MyLocationOverlay(this, mapView);
+	    mapOverlays.add(locationOverlay);
+	    
+	    // call convenience method that zooms map on our location
+        zoomToMyLocation();
 
-		/*// Set up the action bar to show a dropdown list.
+		// Set up the action bar to show a dropdown list.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -78,7 +98,7 @@ public class MainActivity extends MapActivity implements
 						android.R.id.text1, new String[] {
 								getString(R.string.title_section1),
 								getString(R.string.title_section2),
-								getString(R.string.title_section3), }), this);*/
+								getString(R.string.title_section3), }), this);/**/
 	}
 
 	@Override
@@ -108,20 +128,34 @@ public class MainActivity extends MapActivity implements
 	public boolean onNavigationItemSelected(int position, long id) {
 		// When the given dropdown item is selected, show its contents in the
 		// container view.
-		Fragment fragment = new DummySectionFragment();
+		android.app.Fragment fragment = new DummySectionFragment();
 		Bundle args = new Bundle();
 		args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 		fragment.setArguments(args);
-		//getSupportFragmentManager().beginTransaction()
-		//		.replace(R.id.container, fragment).commit();
+		getFragmentManager().beginTransaction().replace(R.id.container, fragment);
 		return true;
 	}
+	
+	/**
+     * This method zooms to the user's location with a zoom level of 10.
+     */
+    private void zoomToMyLocation() {
+	    GeoPoint myLocationGeoPoint = locationOverlay.getMyLocation();
+	    if(myLocationGeoPoint != null) {
+	    	Toast.makeText(this, myLocationGeoPoint.getLatitudeE6()+myLocationGeoPoint.getLongitudeE6(), Toast.LENGTH_LONG).show();
+            mapView.getController().animateTo(myLocationGeoPoint);
+            mapView.getController().setZoom(10);
+	    }
+	    else {
+            Toast.makeText(this, "Cannot determine location", Toast.LENGTH_LONG).show();
+    }
+    }
 
 	/**
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class DummySectionFragment extends Fragment {
+	public static class DummySectionFragment extends android.app.Fragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
