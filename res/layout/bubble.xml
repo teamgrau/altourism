@@ -7,12 +7,6 @@
         android:padding="25dip"
         android:id="@+id/bubble"
         android:visibility="gone">
-    <LinearLayout
-            android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:orientation="vertical">
-            <!--android:background="@+drawable/bubble"-->
-
         <RelativeLayout
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
@@ -46,7 +40,8 @@
                     android:gravity="right"
                     android:layout_alignParentRight="true"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/cross"/>
+                    android:src="@drawable/cross"
+                    android:contentDescription=""/>
         </RelativeLayout>
         <TextView
                 android:text="Bubble Text"
@@ -55,5 +50,4 @@
                 android:textColor="#000"
                 android:layout_width="fill_parent"/>
 
-    </LinearLayout>
 </LinearLayout>

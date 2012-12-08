@@ -1,5 +1,14 @@
 package com.teamgrau.altourism;
 
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,7 +31,7 @@ import com.google.android.maps.OverlayItem;
 
 import java.nio.BufferUnderflowException;
 
-public class MainActivity extends MapActivity implements
+public class MainActivity extends android.support.v4.app.FragmentActivity implements
         ActionBar.OnNavigationListener {
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -30,41 +39,24 @@ public class MainActivity extends MapActivity implements
      */
 	private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
 
-    private MapController mapController;
-    private MapView mapView;
-    private LocationManager locationManager;
-    private MyOverlays itemizedoverlay;
-    private MyLocationOverlay myLocationOverlay;
+    private GoogleMap mMap;
 
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setContentView(R.layout.activity_main); // bind the layout to the activity
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                .getMap();
 
-        // Configure the Map
-        mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setSatellite(true);
-        mapController = mapView.getController();
-        mapController.setZoom(16); // Zoom 1 is world view
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-                0, new GeoUpdateHandler());
+        /*Spinner spinner = (Spinner) findViewById(R.id.layers_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this, R.array.layers_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
-        myLocationOverlay = new MyLocationOverlay(this, mapView);
-        mapView.getOverlays().add(myLocationOverlay);
+        spinner.setOnItemSelectedListener(this);*/
 
-        myLocationOverlay.runOnFirstFix(new Runnable() {
-            public void run() {
-                mapView.getController().animateTo(myLocationOverlay.getMyLocation());
-            }
-        });
-
-        Drawable drawable = this.getResources().getDrawable(R.drawable.altourism_user_position);
-        itemizedoverlay = new MyOverlays(this, drawable);
-        createMarker();
-
-        BubbleDisplayer bubble = new BubbleDisplayer(this);
-        bubble.display(myLocationOverlay.getMyLocation());
+        setUpMapIfNeeded();
+        mMap.setMyLocationEnabled(true);
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getActionBar();
@@ -88,56 +80,24 @@ public class MainActivity extends MapActivity implements
     }
 
     @Override
-    protected boolean isRouteDisplayed() {
-        return false;
-    }
-
-    public class GeoUpdateHandler implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location location) {
-            int lat = (int) (location.getLatitude() * 1E6);
-            int lng = (int) (location.getLongitude() * 1E6);
-            GeoPoint point = new GeoPoint(lat, lng);
-            createMarker();
-            mapController.animateTo(point); // mapController.setCenter(point);
-            Toast.makeText(getBaseContext(), lat + " " + lng, Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    }
-
-    private void createMarker() {
-        GeoPoint p = mapView.getMapCenter();
-        OverlayItem overlayitem = new OverlayItem(p, "", "");
-        itemizedoverlay.addOverlay(overlayitem);
-        if (itemizedoverlay.size() > 0) {
-            mapView.getOverlays().add(itemizedoverlay);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.enableCompass();
+        setUpMapIfNeeded();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        myLocationOverlay.disableMyLocation();
-        myLocationOverlay.disableCompass();
+    private void setUpMapIfNeeded() {
+        if (mMap == null) {
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+        }
+    }
+
+    private boolean checkReady() {
+        if (mMap == null) {
+            Toast.makeText(this, "Map is not ready", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
 
     @Override

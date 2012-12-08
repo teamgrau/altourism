@@ -46,7 +46,7 @@ public class BubbleDisplayer {
 
     public BubbleDisplayer(MainActivity activity) {
         this.activity = activity;
-        map = (MapView) activity.findViewById(R.id.mapview);
+        //map = (MapView) activity.findViewById(R.id.mapview);
 
         map.setBuiltInZoomControls(true);
         mapController = map.getController();
