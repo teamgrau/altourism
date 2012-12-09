@@ -5,6 +5,8 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
+import android.graphics.Typeface;
+import android.widget.*;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -19,9 +21,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 import android.view.*;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -57,6 +56,7 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 
         setUpMapIfNeeded();
         mMap.setMyLocationEnabled(true);
+
 
         // Set up the action bar to show a dropdown list.
         final ActionBar actionBar = getActionBar();
@@ -161,6 +161,24 @@ public class MainActivity extends android.support.v4.app.FragmentActivity implem
 			return textView;
 		}
 	}
+
+    protected void changeFonts(ViewGroup root) {
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/comicsans.ttf"); /* We should definitly change this */
+
+        for(int i = 0; i <root.getChildCount(); i++) {
+            View v = root.getChildAt(i);
+            if(v instanceof TextView ) {
+                ((TextView)v).setTypeface(tf);
+            } else if(v instanceof Button) {
+                ((Button)v).setTypeface(tf);
+            } else if(v instanceof EditText) {
+                ((EditText)v).setTypeface(tf);
+            } else if(v instanceof ViewGroup) {
+                changeFonts((ViewGroup)v);
+            }
+        }
+
+    }
 }
 
 /*import java.util.List;
