@@ -1,7 +1,17 @@
 package com.teamgrau.altourism;
 
+import android.annotation.SuppressLint;
+import android.graphics.Point;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.ViewTreeObserver;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.Interpolator;
 import android.widget.*;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.model.*;
+import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
 import com.teamgrau.altourism.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -25,8 +35,8 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
-        implements AdapterView.OnItemSelectedListener
-{
+        implements AdapterView.OnItemSelectedListener, GoogleMap.OnMarkerClickListener,
+                   GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -56,6 +66,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     private SystemUiHider mSystemUiHider;
 
     private GoogleMap mMap;
+
+    private Marker mPerth;
+    private Marker mSydney;
+    private Marker mBrisbane;
+    private Marker mAdelaide;
+    private Marker mMelbourne;
+    private Marker mBerlin;
+
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
@@ -120,9 +138,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     }
                 } );
 
-        mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                .getMap();
-
         Spinner spinner = (Spinner) findViewById(R.id.layers_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.layers_array, android.R.layout.simple_spinner_item);
@@ -153,8 +168,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // while interacting with the UI.
         findViewById( R.id.layers_spinner ).setOnTouchListener(
                 mDelayHideTouchListener );
-
-        if (mMap!=null) mMap.setMyLocationEnabled(true);
     }
 
     @Override
@@ -204,33 +217,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mHideHandler.postDelayed( mHideRunnable, delayMillis );
     }
 
-    private void setUpMapIfNeeded() {
-        if (mMap == null) {
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-        }
-    }
-
-    /**
-     * Called when the Traffic checkbox is clicked.
-     */
-    public void onTrafficToggled(View view) {
-        if (!checkReady()) {
-            return;
-        }
-        mMap.setTrafficEnabled(((CheckBox) view).isChecked());
-    }
-
-    /**
-     * Called when the MyLocation checkbox is clicked.
-     */
-    public void onMyLocationToggled(View view) {
-        if (!checkReady()) {
-            return;
-        }
-        mMap.setMyLocationEnabled(((CheckBox) view).isChecked());
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (!checkReady()) {
@@ -260,11 +246,200 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Do nothing.
     }
 
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                    .getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+            }
+        }
+    }
+
+    private void setUpMap() {
+        // Hide the zoom controls as the button panel will cover it.
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.setMyLocationEnabled(true);
+
+        // Add lots of markers to the map.
+        addMarkersToMap();
+
+        // Setting an info window adapter allows us to change the both the contents and look of the
+        // info window.
+        mMap.setInfoWindowAdapter(new AltourismInfoWindowAdapter(this));
+
+        // Set listeners for marker events.  See the bottom of this class for their behavior.
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+        mMap.setOnMarkerDragListener(this);
+
+        // Pan to see all markers in view.
+        // Cannot zoom to bounds until the map has a size.
+        final View mapView = getSupportFragmentManager().findFragmentById(R.id.map).getView();
+        if (mapView.getViewTreeObserver().isAlive()) {
+            mapView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @SuppressLint("NewApi") // We check which build version we are using.
+                @Override
+                public void onGlobalLayout() {
+                    LatLngBounds bounds = new LatLngBounds.Builder()
+                            .include(AltourismInfoWindowAdapter.HUMB_UNI)
+                            .include(AltourismInfoWindowAdapter.HACK_MARKT)
+                            .include(AltourismInfoWindowAdapter.GEN_MARKT)
+                            .include(AltourismInfoWindowAdapter.D_DOM)
+                            .include(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
+                            .include(AltourismInfoWindowAdapter.ALT_MUS)
+                            .build();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+                }
+            });
+        }
+    }
+
+    private void addMarkersToMap() {
+        mBerlin = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
+                .title("Alexanderplatz")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+
+        // Uses a colored icon.
+        mBrisbane = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.ALT_MUS)
+                .title("Altes Museum")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+        // Uses a custom icon.
+        mSydney = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.D_DOM)
+                .title("Deutscher Dom")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
+
+        // Creates a draggable marker. Long press to drag.
+        mMelbourne = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.GEN_MARKT)
+                .title("Gendarmen Markt")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+
+        // A few more markers for good measure.
+        mPerth = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.HACK_MARKT)
+                .title("Hackescher Markt")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+        mAdelaide = mMap.addMarker(new MarkerOptions()
+                .position(AltourismInfoWindowAdapter.HUMB_UNI)
+                .title("Humbold Universitaet")
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+
+        // Creates a marker rainbow demonstrating how to create default marker icons of different
+        // hues (colors).
+        int numMarkersInRainbow = 12;
+        for (int i = 0; i < numMarkersInRainbow; i++) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(
+                            -30 + 10 * Math.sin(i * Math.PI / (numMarkersInRainbow - 1)),
+                            135 - 10 * Math.cos(i * Math.PI / (numMarkersInRainbow - 1))))
+                    .title("Marker " + i)
+                    .icon(BitmapDescriptorFactory.defaultMarker(i * 360 / numMarkersInRainbow)));
+        }
+    }
+
     private boolean checkReady() {
         if (mMap == null) {
             Toast.makeText(this, R.string.map_not_ready, Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
+    }
+
+    /** Called when the Clear button is clicked. */
+    public void onClearMap(View view) {
+        if (!checkReady()) {
+            return;
+        }
+        mMap.clear();
+    }
+
+    /** Called when the Reset button is clicked. */
+    public void onResetMap(View view) {
+        if (!checkReady()) {
+            return;
+        }
+        // Clear the map because we don't want duplicates of the markers.
+        mMap.clear();
+        addMarkersToMap();
+    }
+
+    //
+    // Marker related listeners.
+    //
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        // This causes the marker at Perth to bounce into position when it is clicked.
+        if (marker.equals(mPerth)) {
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            Projection proj = mMap.getProjection();
+            Point startPoint = proj.toScreenLocation(AltourismInfoWindowAdapter.HUMB_UNI);
+            startPoint.offset(0, -100);
+            final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+            final long duration = 1500;
+
+            final Interpolator interpolator = new BounceInterpolator();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed / duration);
+                    double lng = t * AltourismInfoWindowAdapter.HUMB_UNI.longitude + (1 - t) * startLatLng.longitude;
+                    double lat = t * AltourismInfoWindowAdapter.HUMB_UNI.latitude + (1 - t) * startLatLng.latitude;
+                    marker.setPosition(new LatLng(lat, lng));
+
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
+                    }
+                }
+            });
+        }
+        // We return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getBaseContext(), "Click Info Window", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        //mTopText.setText("onMarkerDragStart");
+        Toast.makeText(getBaseContext(), "onMarkerDragStart", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        //mTopText.setText("onMarkerDragEnd");
+        Toast.makeText(getBaseContext(), "onMarkerDragEnd", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        //mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
+        Toast.makeText(getBaseContext(), "onMarkerDrag.  Current Position: " + marker.getPosition(), Toast.LENGTH_SHORT).show();
     }
 }
