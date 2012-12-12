@@ -1,0 +1,11 @@
+In IntelliJ IDEA:
+
+Create a file <location>/libs/google-play-services_lib/src/dummy.java containing class dummy {}.
+File->Add Module
+Create Module from Existing Sources -> <location>/libs/google-play-services_lib
+Next->Next->...->Finish
+File->Project Structure->Modules->YourApp
++->Module Dependency->Google-play-services_lib (The + button is in the bottom left corner of the dialog.)
++->Jars or directories-> <location>/libs/google-play-services_lib/libs/google-play-services.jar
+Use the up/down arrows to move <Module source> to the bottom of the list.
+You can delete dummy.java if you like.
