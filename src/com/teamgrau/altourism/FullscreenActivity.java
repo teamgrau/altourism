@@ -15,7 +15,6 @@ import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
 import com.teamgrau.altourism.util.SystemUiHider;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -67,12 +66,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private GoogleMap mMap;
 
-    private Marker mPerth;
-    private Marker mSydney;
-    private Marker mBrisbane;
-    private Marker mAdelaide;
-    private Marker mMelbourne;
-    private Marker mBerlin;
+    private Marker mAlex;
+    private Marker mAltMus;
+    private Marker mHumUni;
+    private Marker mHackMarkt;
+    private Marker mGenMarkt;
+    private Marker mDDom;
 
 
     @Override
@@ -117,8 +116,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                             }
                             controlsView
                                     .animate()
-                                    .translationY(
-                                            visible ? 0 : mControlsHeight )
+                                    .translationY(visible ? 0 : mControlsHeight )
                                     .setDuration( mShortAnimTime );
                         }
                         else
@@ -223,7 +221,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             return;
         }
         Log.i("LDA", "item selected at position " + position + " with string "
-                + (String) parent.getItemAtPosition(position));
+                + parent.getItemAtPosition(position));
         setLayer((String) parent.getItemAtPosition(position));
     }
 
@@ -295,6 +293,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                             .include(AltourismInfoWindowAdapter.ALT_MUS)
                             .build();
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        //noinspection deprecation
                         mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     } else {
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -306,37 +305,37 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     private void addMarkersToMap() {
-        mBerlin = mMap.addMarker(new MarkerOptions()
+        mAlex = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
                 .title("Alexanderplatz")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
 
         // Uses a colored icon.
-        mBrisbane = mMap.addMarker(new MarkerOptions()
+        mAltMus = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.ALT_MUS)
                 .title("Altes Museum")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
         // Uses a custom icon.
-        mSydney = mMap.addMarker(new MarkerOptions()
+        mDDom = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.D_DOM)
                 .title("Deutscher Dom")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
 
         // Creates a draggable marker. Long press to drag.
-        mMelbourne = mMap.addMarker(new MarkerOptions()
+        mGenMarkt = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.GEN_MARKT)
                 .title("Gendarmen Markt")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
 
         // A few more markers for good measure.
-        mPerth = mMap.addMarker(new MarkerOptions()
+        mHackMarkt = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.HACK_MARKT)
                 .title("Hackescher Markt")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
-        mAdelaide = mMap.addMarker(new MarkerOptions()
+        mHumUni = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.HUMB_UNI)
                 .title("Humbold Universitaet")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
@@ -380,6 +379,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         addMarkersToMap();
     }
 
+    public void onMyLocationToggled() {
+        //mMap.setMyLocationEnabled(findViewById(R.id.my_location).isEnabled());
+    }
+
+    public void onTrafficToggled() {
+        //mMap.setTrafficEnabled(findViewById(R.id.traffic).isEnabled());
+    }
+
     //
     // Marker related listeners.
     //
@@ -387,7 +394,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     @Override
     public boolean onMarkerClick(final Marker marker) {
         // This causes the marker at Perth to bounce into position when it is clicked.
-        if (marker.equals(mPerth)) {
+        if (marker.equals(mHumUni)) {
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
             Projection proj = mMap.getProjection();
