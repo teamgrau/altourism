@@ -62,7 +62,7 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private void render(Marker marker, View view) {
         int badge;
         // Use the equals() method on a Marker to check for equals.  Do not use ==.
-        badge = R.drawable.ic_launcher;
+        badge = R.drawable.altourism_pov;
         ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
 
         String title = marker.getTitle();
@@ -70,7 +70,7 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         if (title != null) {
             // Spannable string allows us to edit the formatting of the text.
             SpannableString titleText = new SpannableString(title);
-            titleText.setSpan(new ForegroundColorSpan(Color.RED), 0, titleText.length(), 0);
+            titleText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, titleText.length(), 0);
             titleUi.setText(titleText);
         } else {
             titleUi.setText("");
@@ -80,8 +80,9 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
         if (snippet != null) {
             SpannableString snippetText = new SpannableString(snippet);
-            snippetText.setSpan(new ForegroundColorSpan(Color.MAGENTA), 0, 10, 0);
-            snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
+            snippetText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, snippetText.length(), 0);
+
+            //snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
             snippetUi.setText(snippetText);
         } else {
             snippetUi.setText("");

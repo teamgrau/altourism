@@ -308,37 +308,41 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mAlex = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
                 .title("Alexanderplatz")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
         // Uses a colored icon.
         mAltMus = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.ALT_MUS)
                 .title("Altes Museum")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
         // Uses a custom icon.
         mDDom = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.D_DOM)
                 .title("Deutscher Dom")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
-                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.arrow)));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
         // Creates a draggable marker. Long press to drag.
         mGenMarkt = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.GEN_MARKT)
                 .title("Gendarmen Markt")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
         // A few more markers for good measure.
         mHackMarkt = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.HACK_MARKT)
                 .title("Hackescher Markt")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
         mHumUni = mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.HUMB_UNI)
                 .title("Humbold Universitaet")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi"));
+                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
         // Creates a marker rainbow demonstrating how to create default marker icons of different
         // hues (colors).
