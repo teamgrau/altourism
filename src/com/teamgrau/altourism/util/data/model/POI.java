@@ -1,4 +1,4 @@
-package com.teamgrau.altourism.util.data;
+package com.teamgrau.altourism.util.data.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
