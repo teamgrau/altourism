@@ -1,6 +1,8 @@
 package com.teamgrau.altourism.util;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
@@ -31,8 +33,10 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     // "title" and "snippet".
     private final View mWindow;
     private final View mContents;
+    private final Context mContext;
 
     public AltourismInfoWindowAdapter(FullscreenActivity activity) {
+        mContext = activity.getApplicationContext();
         mWindow = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
         mContents = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
     }
@@ -61,7 +65,9 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             // Spannable string allows us to edit the formatting of the text.
             SpannableString titleText = new SpannableString(title);
             titleText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, titleText.length(), 0);
+            titleText.toString().toUpperCase();
             titleUi.setText(titleText);
+            titleUi.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-bold.otf"));
         } else {
             titleUi.setText("");
         }
@@ -74,6 +80,7 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             //snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
             snippetUi.setText(snippetText);
+            snippetUi.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-light.otf"));
         } else {
             snippetUi.setText("");
         }
