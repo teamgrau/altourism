@@ -1,4 +1,4 @@
-package com.teamgrau.altourism.util.data;
+package com.teamgrau.altourism.util.data.model;
 
 /**
  * The class Geschichte models the data-object Geschichte.
