@@ -19,7 +19,6 @@ import com.teamgrau.altourism.R;
  * Time: 2:17 PM
  */
 public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-    //private final RadioGroup mOptions;
     // For testing:
     public static final LatLng GEN_MARKT = new LatLng(52.513609,13.392119);
     public static final LatLng HUMB_UNI = new LatLng(52.517396, 13.394394);
@@ -36,25 +35,16 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     public AltourismInfoWindowAdapter(FullscreenActivity activity) {
         mWindow = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
         mContents = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
-        //mOptions = (RadioGroup) activity.findViewById(R.id.custom_info_window_options);
     }
 
     @Override
     public View getInfoWindow(Marker marker) {
-        /*if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_window) {
-            // This means that getInfoContents will be called.
-            return null;
-        }*/
         render(marker, mWindow);
         return mWindow;
     }
 
     @Override
     public View getInfoContents(Marker marker) {
-        /*if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
-            // This means that the default info contents will be used.
-            return null;
-        }*/
         render(marker, mContents);
         return mContents;
     }
