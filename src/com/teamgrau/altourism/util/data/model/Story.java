@@ -6,13 +6,13 @@ package com.teamgrau.altourism.util.data.model;
  *
  */
 
-public final class Geschichte {
+public final class Story {
 
 	String text;
 	
 	// fields to come: Tags, date of entry, media, user
 	
-	public Geschichte(String text){
+	public Story(String text){
 		this.text = text;
 	}
 }

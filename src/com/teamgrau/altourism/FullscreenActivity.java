@@ -3,6 +3,7 @@ package com.teamgrau.altourism;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.*;
@@ -21,6 +22,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.teamgrau.altourism.util.data.StoryProvider;
+import com.teamgrau.altourism.util.data.StoryProviderHardcoded;
+import com.teamgrau.altourism.util.data.model.POI;
+import com.teamgrau.altourism.util.data.model.Story;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
@@ -65,12 +74,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private GoogleMap mMap;
 
-    private Marker mAlex;
-    private Marker mAltMus;
-    private Marker mHumUni;
-    private Marker mHackMarkt;
-    private Marker mGenMarkt;
-    private Marker mDDom;
+    private GoogleMap.InfoWindowAdapter mIwa;
+    private List<Marker> currentMarkers;
 
 
     @Override
@@ -78,9 +83,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     {
         super.onCreate( savedInstanceState );
 
-        setContentView( R.layout.activity_fullscreen );
+        setContentView( R.layout.main_view );
+        TextView title = (TextView) findViewById(R.id.title_bar);
+        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
 
         ActionBar actionBar = getActionBar();
+        actionBar.hide();
 
         /*Spinner spinner = (Spinner) findViewById(R.id.layers_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -161,7 +169,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
-        mMap.setInfoWindowAdapter(new AltourismInfoWindowAdapter(this));
+        mIwa = new AltourismInfoWindowAdapter(this);
+        mMap.setInfoWindowAdapter(mIwa);
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
         mMap.setOnMarkerClickListener(this);
@@ -176,14 +185,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 @SuppressLint("NewApi") // We check which build version we are using.
                 @Override
                 public void onGlobalLayout() {
-                    LatLngBounds bounds = new LatLngBounds.Builder()
-                            .include(AltourismInfoWindowAdapter.HUMB_UNI)
-                            .include(AltourismInfoWindowAdapter.HACK_MARKT)
-                            .include(AltourismInfoWindowAdapter.GEN_MARKT)
-                            .include(AltourismInfoWindowAdapter.D_DOM)
-                            .include(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
-                            .include(AltourismInfoWindowAdapter.ALT_MUS)
-                            .build();
+                    LatLngBounds.Builder b = new LatLngBounds.Builder();
+                    for (Marker m : currentMarkers) {
+                        b.include(m.getPosition());
+                    }
+                    LatLngBounds bounds = b.build();
+
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                         //noinspection deprecation
                         mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -197,44 +204,52 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     private void addMarkersToMap() {
-        mAlex = mMap.addMarker(new MarkerOptions()
+        StoryProvider sp = new StoryProviderHardcoded();
+        List<POI> poiList = sp.listPOIs(mMap.getMyLocation(), 200);
+        currentMarkers = new LinkedList<Marker>();
+
+        for (POI p : poiList) {
+            currentMarkers.add(mMap.addMarker(new MarkerOptions()
+                    .position(p.getPosition())
+                    .title(p.getTitle())
+                    .snippet("TODO: List of stories")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));
+        }
+        /*mMap.addMarker(new MarkerOptions()
                 .position(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
                 .title("Alexanderplatz")
                 .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
-        // Uses a colored icon.
-        mAltMus = mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.ALT_MUS)
-                .title("Altes Museum")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
+        mMap.addMarker(new MarkerOptions()
+            .position(AltourismInfoWindowAdapter.ALT_MUS)
+            .title("Altes Museum")
+            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
-        // Uses a custom icon.
-        mDDom = mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.D_DOM)
-                .title("Deutscher Dom")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
+        mMap.addMarker(new MarkerOptions()
+            .position(AltourismInfoWindowAdapter.D_DOM)
+            .title("Deutscher Dom")
+            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
-        // Creates a draggable marker. Long press to drag.
-        mGenMarkt = mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.GEN_MARKT)
-                .title("Gendarmen Markt")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
+        mMap.addMarker(new MarkerOptions()
+            .position(AltourismInfoWindowAdapter.GEN_MARKT)
+            .title("Gendarmen Markt")
+            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
 
-        // A few more markers for good measure.
-        mHackMarkt = mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.HACK_MARKT)
-                .title("Hackescher Markt")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-        mHumUni = mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.HUMB_UNI)
-                .title("Humbold Universitaet")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
+        mMap.addMarker(new MarkerOptions()
+            .position(AltourismInfoWindowAdapter.HACK_MARKT)
+            .title("Hackescher Markt")
+            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
+
+        mMap.addMarker(new MarkerOptions()
+            .position(AltourismInfoWindowAdapter.HUMB_UNI)
+            .title("Humbold Universitaet")
+            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));*/
     }
 
     private boolean checkReady() {
@@ -261,37 +276,55 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        // This causes the marker at Perth to bounce into position when it is clicked.
-        if (marker.equals(mHumUni)) {
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-            Projection proj = mMap.getProjection();
-            Point startPoint = proj.toScreenLocation(AltourismInfoWindowAdapter.HUMB_UNI);
-            startPoint.offset(0, -100);
-            final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-            final long duration = 1500;
+        // This causes the marker at Humbold University to bounce into position when it is clicked.
+        //if (marker.equals(mHumUni)) {
+        /*final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        startPoint.offset(0, -100);
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 1500;
 
-            final Interpolator interpolator = new BounceInterpolator();
+        final Interpolator interpolator = new BounceInterpolator();
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = interpolator.getInterpolation((float) elapsed / duration);
-                    double lng = t * AltourismInfoWindowAdapter.HUMB_UNI.longitude + (1 - t) * startLatLng.longitude;
-                    double lat = t * AltourismInfoWindowAdapter.HUMB_UNI.latitude + (1 - t) * startLatLng.latitude;
-                    marker.setPosition(new LatLng(lat, lng));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * marker.getPosition().longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * marker.getPosition().latitude + (1 - t) * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
 
-                    if (t < 1.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    }
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
                 }
-            });
-        }
+            }
+        });
+        //}
         // We return false to indicate that we have not consumed the event and that we wish
         // for the default behavior to occur (which is for the camera to move such that the
         // marker is centered and for the marker's info window to open, if it has one).
+        return false;*/
+
+        // Move camera so whole bubble is visible
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        startPoint.offset(0, -200);
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        CameraPosition camPos = new CameraPosition.Builder()
+                .target(startLatLng)
+                .zoom(mMap.getCameraPosition().zoom)
+                .build();
+
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
+        // TODO: display information window (bubble) at right position
+        /*View v = mIwa.getInfoWindow(marker);*/
+
+
         return false;
     }
 

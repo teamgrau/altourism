@@ -15,15 +15,23 @@ import java.util.List;
 public final class POI {
 	
 	String title;
-	LatLng position;
-	List<Geschichte> geschichten;
+
+    public LatLng getPosition() {
+        return position;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    LatLng position;
+	List<Story> geschichten;
 	
 	
 	public POI( String title, LatLng position ) {
 		this.title = title;
 		this.position = position;
-		geschichten = new ArrayList<Geschichte>();
-		
+		geschichten = new ArrayList<Story>();
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.teamgrau.altourism.util.data;
 
 import java.util.List;
+
+import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.teamgrau.altourism.util.data.model.POI;
 /**
@@ -19,5 +21,5 @@ public interface StoryProvider {
 	 * @param radius Radius of the circle-area
 	 * @return List of POI's lying in the circle
 	 */
-	List<POI> listPOIs( LatLng position, double radius );
+	List<POI> listPOIs( Location position, double radius );
 }
