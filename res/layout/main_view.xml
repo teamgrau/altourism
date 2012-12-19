@@ -28,62 +28,51 @@
 
         </TextView>
     </LinearLayout>
-    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true" >
-
-        <LinearLayout
-                android:id="@+id/fullscreen_content_controls"
-                style="?buttonBarStyle"
-                android:layout_width="match_parent"
+    <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:columnCount="7"
+            android:rowCount="1"
+            android:background="@color/black_overlay"
+            style="?buttonBarStyle">
+        <Button
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:background="@color/black_overlay"
-                android:orientation="horizontal"
-                tools:ignore="UselessParent" >
-
-            <Button
-                android:id="@+id/dummy_button1"
+                android:text="[Account]"
+                android:id="@+id/button"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_columnSpan="4"
+                android:layout_gravity="left"
+                android:drawableLeft="@drawable/account_head_small"
+                style="?buttonBarButtonStyle" android:singleLine="true"/>
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="38dp"
+                android:id="@+id/cancelButton"
+                android:layout_row="0"
+                android:layout_column="4"
+                android:src="@drawable/navigation_cancel_small"
                 style="?buttonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dummy_button" />
-
-            <Button
-                    android:id="@+id/dummy_button2"
-                    style="?buttonBarButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/dummy_button" />
-            <!--
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignTop="@id/map"
-                    android:padding="6dp"
-                    android:background="#D000"
-                    android:orientation="vertical" android:id="@+id/linearLayout">
-                <Spinner
-                        android:id="@+id/layers_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/> -->
-            <!--<CheckBox
-                    android:id="@+id/traffic"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:onClick="onTrafficToggled"
-                    android:text="@string/traffic"/>
-            <CheckBox
-                    android:id="@+id/my_location"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:onClick="onMyLocationToggled"
-                    android:text="@string/my_location"/>-->
-            <!--</LinearLayout>-->
-        </LinearLayout>
-    </FrameLayout>
+                android:contentDescription="@string/cancel"/>
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="38dp"
+                android:id="@+id/acceptButton"
+                android:layout_row="0"
+                android:layout_column="5"
+                android:src="@drawable/navigation_accept_small"
+                style="?buttonBarButtonStyle"
+                android:contentDescription="@string/accept"/>
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="38dp"
+                android:id="@+id/menuButton"
+                android:layout_row="0"
+                android:layout_column="6"
+                android:src="@drawable/menu_more"
+                style="?buttonBarButtonStyle"
+                android:contentDescription="@string/menu"/>
+    </GridLayout>
 </FrameLayout>

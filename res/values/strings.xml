@@ -18,6 +18,9 @@
     <string name="my_location">My Location</string>
     <string name="map_not_ready">Map not ready!</string>
     <string name="story_here">Create</string>
+    <string name="account_button">[Account]</string>
+    <string name="accept">Accept</string>
+    <string name="menu">Menu</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>

@@ -44,37 +44,20 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements AdapterView.OnItemSelectedListener, GoogleMap.OnMarkerClickListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener {
-    /**
-     * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
-     */
-    private static final boolean AUTO_HIDE = true;
 
     /**
-     * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
-     * user interaction before hiding the system UI.
+     * Reference to GoogleMap instance
      */
-    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
-    /**
-     * If set, will toggle the system UI visibility upon interaction. Otherwise,
-     * will show the system UI visibility upon interaction.
-     */
-    private static final boolean TOGGLE_ON_CLICK = true;
-
-    /**
-     * The flags to pass to {@link SystemUiHider#getInstance}.
-     */
-    private static final int HIDER_FLAGS = SystemUiHider.FLAG_HIDE_NAVIGATION;
-
-    /**
-     * The instance of the {@link SystemUiHider} for this activity.
-     */
-    private SystemUiHider mSystemUiHider;
-
     private GoogleMap mMap;
 
+    /**
+     * Reference to the AltourismInfoWindow Adapter
+     */
     private GoogleMap.InfoWindowAdapter mIwa;
+
+    /**
+     * List of currently loaded Markers
+     */
     private List<Marker> currentMarkers;
 
 
@@ -90,13 +73,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         ActionBar actionBar = getActionBar();
         actionBar.hide();
 
-        /*Spinner spinner = (Spinner) findViewById(R.id.layers_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                this, R.array.layers_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        spinner.setOnItemSelectedListener(this);*/
         setUpMapIfNeeded();
     }
 
@@ -215,41 +191,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     .snippet("TODO: List of stories")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));
         }
-        /*mMap.addMarker(new MarkerOptions()
-                .position(AltourismInfoWindowAdapter.ALEXANDERPLATZ)
-                .title("Alexanderplatz")
-                .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-
-        mMap.addMarker(new MarkerOptions()
-            .position(AltourismInfoWindowAdapter.ALT_MUS)
-            .title("Altes Museum")
-            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-
-        mMap.addMarker(new MarkerOptions()
-            .position(AltourismInfoWindowAdapter.D_DOM)
-            .title("Deutscher Dom")
-            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-
-        mMap.addMarker(new MarkerOptions()
-            .position(AltourismInfoWindowAdapter.GEN_MARKT)
-            .title("Gendarmen Markt")
-            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-
-        mMap.addMarker(new MarkerOptions()
-            .position(AltourismInfoWindowAdapter.HACK_MARKT)
-            .title("Hackescher Markt")
-            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));
-
-        mMap.addMarker(new MarkerOptions()
-            .position(AltourismInfoWindowAdapter.HUMB_UNI)
-            .title("Humbold Universitaet")
-            .snippet("hhuhuhuhuhuuhuuuhuhu and even more hihihiihihihihiihihihi")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov)));*/
     }
 
     private boolean checkReady() {
