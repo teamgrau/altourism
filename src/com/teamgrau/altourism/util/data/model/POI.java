@@ -1,6 +1,6 @@
 package com.teamgrau.altourism.util.data.model;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public final class POI {
 	
 	String title;
 
-    public LatLng getPosition() {
+    public Location getPosition() {
         return position;
     }
 
@@ -24,11 +24,11 @@ public final class POI {
         return title;
     }
 
-    LatLng position;
+    Location position;
 	List<Story> geschichten;
 	
 	
-	public POI( String title, LatLng position ) {
+	public POI( String title, Location position ) {
 		this.title = title;
 		this.position = position;
 		geschichten = new ArrayList<Story>();
