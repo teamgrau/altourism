@@ -2,9 +2,11 @@ package com.teamgrau.altourism;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.graphics.Point;
-import android.graphics.Typeface;
+import android.graphics.*;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.BounceInterpolator;
@@ -29,6 +31,7 @@ import com.teamgrau.altourism.util.data.model.Story;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
@@ -42,7 +45,7 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
-        implements AdapterView.OnItemSelectedListener, GoogleMap.OnMarkerClickListener,
+        implements GoogleMap.OnMarkerClickListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener {
 
     /**
@@ -60,13 +63,19 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      */
     private List<Marker> currentMarkers;
 
+    /**
+     * holds the current overlay a.k.a. war dust
+     */
+    private GroundOverlay mGroundOverlay;
+
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
 
-        setContentView( R.layout.main_view );
+        setContentView(R.layout.main_view);
+
         TextView title = (TextView) findViewById(R.id.title_bar);
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
 
@@ -74,6 +83,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         actionBar.hide();
 
         setUpMapIfNeeded();
+        findViewById(R.id.menuButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ImageButton b = (ImageButton) v;
+                b.setRotation(b.getRotation()+90);
+            }
+        });
     }
 
     @Override
@@ -89,35 +104,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         super.onPostCreate( savedInstanceState );
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (!checkReady()) {
-            return;
-        }
-        Log.i("LDA", "item selected at position " + position + " with string "
-                + parent.getItemAtPosition(position));
-        setLayer((String) parent.getItemAtPosition(position));
-    }
-
-    private void setLayer(String layerName) {
-        if (layerName.equals(getString(R.string.normal))) {
-            mMap.setMapType(MAP_TYPE_NORMAL);
-        } else if (layerName.equals(getString(R.string.hybrid))) {
-            mMap.setMapType(MAP_TYPE_HYBRID);
-        } else if (layerName.equals(getString(R.string.satellite))) {
-            mMap.setMapType(MAP_TYPE_SATELLITE);
-        } else if (layerName.equals(getString(R.string.terrain))) {
-            mMap.setMapType(MAP_TYPE_TERRAIN);
-        } else {
-            Log.i("LDA", "Error setting layer with name " + layerName);
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Do nothing.
-    }
-
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -131,14 +117,68 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         }
     }
 
+    private void refreshOverlay() {
+        mGroundOverlay.remove();
+        mGroundOverlay = mMap.addGroundOverlay(renderOverlay());
+    }
+
+    private GroundOverlayOptions renderOverlay() {
+        // TODO: remove following statement, its only purpose is to break nothing while there is no working tracker
+        if (true) return null;
+
+        Projection p = mMap.getProjection();
+        LatLngBounds b = p.getVisibleRegion().latLngBounds;
+
+        List<Location> lList = null;
+        // TODO: we need a working tracker to test this
+        // lList = tracker.getLocations(b);
+
+        List<Point> pList = new LinkedList<Point>();
+        for (Location l : lList)
+            pList.add(p.toScreenLocation(new LatLng(l.getLatitude(), l.getLongitude())));
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ALPHA_8);
+        Canvas c = new Canvas(bitmap);
+
+        Paint paintItBlack = new Paint();
+        paintItBlack.setColor(0xFF000000); // <- 100% opaque black
+        c.drawRect(new Rect(0,0,metrics.widthPixels,metrics.heightPixels), paintItBlack);
+
+        GroundOverlayOptions gOO = new GroundOverlayOptions()
+                                        .positionFromBounds(b);
+
+        // if we display unexplored area everything is black
+        if (pList.size()==0)
+            return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+
+        Paint pathPaint = new Paint();
+        pathPaint.setColor(0x00000000); // <- transparent black
+
+        ListIterator<Point> pIter = pList.listIterator();
+        Point current = pIter.next();
+
+        // Set starting point of path
+        Path path = new Path();
+        path.moveTo(current.x, current.y);
+
+        while (pIter.hasNext()) {
+            current = pIter.next();
+            path.lineTo(current.x, current.y);
+        }
+        c.drawPath(path, pathPaint);
+
+        return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+    }
+
     private void setUpMap() {
+
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
         // Hide the zoom controls as the button panel will cover it.
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mMap.getUiSettings().setZoomControlsEnabled(false);
 
         // Add lots of markers to the map.
         addMarkersToMap();
@@ -174,6 +214,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+
+                    // not sure if this is the best position but overlay rendering also need sizes
+                    refreshOverlay();
                 }
             });
         }
