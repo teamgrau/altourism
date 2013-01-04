@@ -1,6 +1,7 @@
 package com.teamgrau.altourism.util.data;
 
 import android.location.Location;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface GPSTracker {
 
     // returns the last n saved positions starting with the very last position recorded
     List<Location> getLocations(int n);
+
+    List<Location> getLocations(LatLngBounds b);
 }

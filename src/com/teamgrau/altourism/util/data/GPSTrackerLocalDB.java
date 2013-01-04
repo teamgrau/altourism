@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
 
@@ -21,6 +23,12 @@ import java.util.List;
 public class GPSTrackerLocalDB implements GPSTracker {
 
     AltourismDBHelper AlDBHelper;
+
+    // define the columns to return on a PositionEntry Query
+    String[] PositionEntryProjection = {
+            DBDefinition.PositionEntry.COLUMN_NAME_Lat,
+            DBDefinition.PositionEntry.COLUMN_NAME_Lng
+    };
 
 
     public GPSTrackerLocalDB( Context context ){
@@ -46,12 +54,6 @@ public class GPSTrackerLocalDB implements GPSTracker {
     @Override
     public List<Location> getLocations( int n ) {
 
-        // define the columns to return
-        String[] projection = {
-                DBDefinition.PositionEntry.COLUMN_NAME_Lat,
-                DBDefinition.PositionEntry.COLUMN_NAME_Lng
-        };
-
         // sort descending
         String sortOrder = DBDefinition.PositionEntry._ID + " DESC";
 
@@ -61,7 +63,7 @@ public class GPSTrackerLocalDB implements GPSTracker {
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
         Cursor c = db.query(
                 DBDefinition.PositionEntry.TABLE_NAME,    // The table to query
-                projection,                               // The columns to return
+                PositionEntryProjection,                  // The columns to return
                 null,                                     // The columns for the WHERE clause
                 null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
@@ -74,17 +76,65 @@ public class GPSTrackerLocalDB implements GPSTracker {
         Location l;
         List<Location> list = new ArrayList<Location>();
         for(int i = 1; i <= n; ++i){
-            double Lat = c.getDouble(c.getColumnIndex(DBDefinition.PositionEntry.COLUMN_NAME_Lat));
-            double Lng = c.getDouble(c.getColumnIndex(DBDefinition.PositionEntry.COLUMN_NAME_Lng));
-            l = new Location("Thomas LocationProvider");
-            l.setLatitude(Lat);
-            l.setLongitude(Lng);
-            list.add(l);
+            double Lat = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lat ));
+            double Lng = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lng ));
+            l = new Location( "Thomas LocationProvider" );
+            l.setLatitude( Lat );
+            l.setLongitude( Lng );
+            list.add( l );
             c.moveToNext();       // we can move 1 past the last entry w/o negative effects
         }
         c.close();
         db.close();
 
+        return list;
+    }
+
+    @Override
+    public List<Location> getLocations( LatLngBounds b ) {
+
+        // sort ascending
+        String sortOrder = DBDefinition.PositionEntry._ID + " ASC";
+
+        // get the borders for the WHERE clause
+        double north = b.northeast.latitude;
+        double east  = b.northeast.longitude;
+        double south = b.southwest.latitude;
+        double west  = b.southwest.longitude;
+        String selection =
+                DBDefinition.PositionEntry.COLUMN_NAME_Lat + " <= " + north + " AND " +
+                DBDefinition.PositionEntry.COLUMN_NAME_Lat + " >= " + south + " AND " +
+                DBDefinition.PositionEntry.COLUMN_NAME_Lng + " <= " + east  + " AND " +
+                DBDefinition.PositionEntry.COLUMN_NAME_Lng + " >= " + west;
+
+        SQLiteDatabase db = AlDBHelper.getReadableDatabase();
+
+        Cursor c = db.query(
+                DBDefinition.PositionEntry.TABLE_NAME,    // The table to query
+                PositionEntryProjection,                  // The columns to return
+                selection,                                // The WHERE clause
+                null,                                     // The ? values for the WHERE clause (not used)
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+
+        c.moveToFirst();
+        Location l;
+        List<Location> list = new ArrayList<Location>();
+        int n = c.getCount();
+        for(int i = 1; i <= n; ++i){
+            double Lat = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lat ));
+            double Lng = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lng ));
+            l = new Location( "Thomas LocationProvider" );
+            l.setLatitude( Lat );
+            l.setLongitude( Lng );
+            list.add( l );
+            c.moveToNext();       // we can move 1 past the last entry w/o negative effects
+        }
+
+        c.close();
+        db.close();
         return list;
     }
 }
