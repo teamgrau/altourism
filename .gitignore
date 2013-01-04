@@ -22,3 +22,5 @@ local.properties
 
 # idea local project files
 Altourism.iml
+google-play-services_lib.iml
+*.idea/*
