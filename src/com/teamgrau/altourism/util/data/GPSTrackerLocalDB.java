@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import com.google.android.gms.maps.model.LatLng;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
 
