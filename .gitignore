@@ -13,8 +13,12 @@ bin/
 gen/
 
 # Local configuration file (sdk path, etc)
+project.properties
 local.properties
 
 # Eclipse project files
 .classpath
 .project
+
+# idea local project files
+Altourism.iml
