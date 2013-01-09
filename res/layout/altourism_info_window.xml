@@ -39,7 +39,26 @@
                 android:singleLine="true"
                 android:textColor="#ff000000"
                 android:textSize="25dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:text="test title"/>
+        <TextView
+                android:id="@+id/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="false"
+                android:textColor="#ff7f7f7f"
+                android:textSize="17dp"
+                android:text="test address 54, 99999, fake city"/>
+        <ScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/scrollView">
+            <ExpandableListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/expandableListView"/>
+        </ScrollView>
         <TextView
                 android:id="@+id/snippet"
                 android:layout_width="wrap_content"

@@ -24,8 +24,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.teamgrau.altourism.util.data.GPSTracker;
 import com.teamgrau.altourism.util.data.StoryProvider;
 import com.teamgrau.altourism.util.data.StoryProviderHardcoded;
+import com.teamgrau.altourism.util.data.TestTracker;
 import com.teamgrau.altourism.util.data.model.POI;
 import com.teamgrau.altourism.util.data.model.Story;
 
@@ -67,12 +69,15 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      * holds the current overlay a.k.a. war dust
      */
     private GroundOverlay mGroundOverlay;
+    private GPSTracker tracker;
 
 
     @Override
     protected void onCreate( Bundle savedInstanceState )
     {
         super.onCreate( savedInstanceState );
+
+        tracker = new TestTracker();
 
         setContentView(R.layout.main_view);
 
@@ -89,6 +94,17 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 b.setRotation(b.getRotation()+90);
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshOverlay();
     }
 
     @Override
@@ -118,20 +134,18 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     private void refreshOverlay() {
-        mGroundOverlay.remove();
+        if (mGroundOverlay!=null)
+            mGroundOverlay.remove();
+
         mGroundOverlay = mMap.addGroundOverlay(renderOverlay());
     }
 
     private GroundOverlayOptions renderOverlay() {
-        // TODO: remove following statement, its only purpose is to break nothing while there is no working tracker
-        if (true) return null;
-
         Projection p = mMap.getProjection();
         LatLngBounds b = p.getVisibleRegion().latLngBounds;
 
         List<Location> lList = null;
-        // TODO: we need a working tracker to test this
-        // lList = tracker.getLocations(b);
+        lList = tracker.getLocations(b);
 
         List<Point> pList = new LinkedList<Point>();
         for (Location l : lList)
@@ -140,37 +154,64 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ALPHA_8);
+        /**
+         * TODO: change to Bitmap.Config.Alpha_8
+         * Would reduce memory usage but inverting of alpha channel only worked with this.
+         * we should examine the structure of a alpha 8 pixel array
+         */
+        Bitmap bitmap = Bitmap.createBitmap(metrics.widthPixels+1, metrics.heightPixels+1, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bitmap);
-
-        Paint paintItBlack = new Paint();
-        paintItBlack.setColor(0xFF000000); // <- 100% opaque black
-        c.drawRect(new Rect(0,0,metrics.widthPixels,metrics.heightPixels), paintItBlack);
 
         GroundOverlayOptions gOO = new GroundOverlayOptions()
                                         .positionFromBounds(b);
 
-        // if we display unexplored area everything is black
-        if (pList.size()==0)
-            return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+        /**
+         * TODO: improve performance for unexplored areas
+         * shortcut by c.drawRect( wholearea, paintItBlack) and return
+         */
 
         Paint pathPaint = new Paint();
-        pathPaint.setColor(0x00000000); // <- transparent black
+        pathPaint.setColor(0xff000000); // <- transparent white
+        pathPaint.setStrokeWidth(50); // <- pixels
 
         ListIterator<Point> pIter = pList.listIterator();
-        Point current = pIter.next();
-
-        // Set starting point of path
-        Path path = new Path();
-        path.moveTo(current.x, current.y);
+        Point prev = pIter.next();
+        Point current = null;
 
         while (pIter.hasNext()) {
             current = pIter.next();
-            path.lineTo(current.x, current.y);
+            c.drawLine(prev.x, prev.y, current.x, current.y, pathPaint);
+            c.drawCircle(prev.x, prev.y, 25, pathPaint);
+            prev = current;
         }
-        c.drawPath(path, pathPaint);
+        // also the last location need rounded corners :-)
+        c.drawCircle(prev.x, prev.y, 25, pathPaint);
+
+        bitmap = invertAlpha(bitmap);
 
         return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+    }
+
+    /**
+     * This function manipulates the alpha values of a given bitmap.
+     * It is not generic in any way, its purpose is to process a bitmap
+     * generated from renderOverlay(). The drawn path gets its alpha values
+     * set to 0x00 for full transparency and the remaining pixels a value
+     * with some less.
+     * TODO: replace by a renderlib version
+     * @param original Reference to the bitmap to manipulate
+     * @return Reference to the manipulated bitmap
+     */
+    private Bitmap invertAlpha(Bitmap original) {
+        int[] alphas = new int[original.getWidth() * original.getHeight()];
+        original.getPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
+
+        for (int i = 0; i < alphas.length; i++) {
+            alphas[i] = (alphas[i]==0xff000000) ? 0x00000000 : 0xcc000000;
+        }
+
+        original.setPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
+        return original;
     }
 
     private void setUpMap() {
@@ -229,7 +270,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         for (POI p : poiList) {
             currentMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .position(p.getPosition())
+                    .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
                     .title(p.getTitle())
                     .snippet("TODO: List of stories")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));

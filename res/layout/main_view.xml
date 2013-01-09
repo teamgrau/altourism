@@ -71,7 +71,7 @@
                 android:id="@+id/menuButton"
                 android:layout_row="0"
                 android:layout_column="6"
-                android:src="@drawable/menu_more"
+                android:src="@drawable/menu_more_active"
                 style="?buttonBarButtonStyle"
                 android:contentDescription="@string/menu"/>
     </GridLayout>

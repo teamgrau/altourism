@@ -31,7 +31,7 @@ public class StoryProviderHardcoded implements StoryProvider {
 		geschichten.add(new POI("Gendarmenmarkt", l));
         l = new Location(THOMAS_LOCATION_PROVIDER);
         l.setLatitude(52.517396);
-        l.setLongitude(52.517396);
+        l.setLongitude(13.398385);
 		geschichten.add(new POI("Humboldt Uni", l));
         l = new Location(THOMAS_LOCATION_PROVIDER);
         l.setLatitude(52.519772);
