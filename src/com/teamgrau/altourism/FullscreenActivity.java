@@ -2,6 +2,7 @@ package com.teamgrau.altourism;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.content.res.Configuration;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -47,7 +48,7 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
  * @see SystemUiHider
  */
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
-        implements GoogleMap.OnMarkerClickListener,
+        implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener {
 
     /**
@@ -88,6 +89,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         actionBar.hide();
 
         setUpMapIfNeeded();
+        mMap.setOnCameraChangeListener(this);
         findViewById(R.id.menuButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ImageButton b = (ImageButton) v;
@@ -97,13 +99,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
         refreshOverlay();
     }
 
@@ -144,6 +141,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Projection p = mMap.getProjection();
         LatLngBounds b = p.getVisibleRegion().latLngBounds;
 
+        Log.d("Altourism beta", "Rendering with " + b.toString());
+
         List<Location> lList = null;
         lList = tracker.getLocations(b);
 
@@ -172,7 +171,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         Paint pathPaint = new Paint();
         pathPaint.setColor(0xff000000); // <- transparent white
-        pathPaint.setStrokeWidth(50); // <- pixels
+        /**
+         * TODO: make width dependent on zoom level
+         */
+        pathPaint.setStrokeWidth(50); // <- width in pixels
 
         ListIterator<Point> pIter = pList.listIterator();
         Point prev = pIter.next();
@@ -285,16 +287,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         return true;
     }
 
-    /** Called when the Reset button is clicked. */
-    public void onResetMap(View view) {
-        if (!checkReady()) {
-            return;
-        }
-        // Clear the map because we don't want duplicates of the markers.
-        mMap.clear();
-        addMarkersToMap();
-    }
-
     //
     // Marker related listeners.
     //
@@ -374,6 +366,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     public void onMarkerDrag(Marker marker) {
         //mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
         Toast.makeText(getBaseContext(), "onMarkerDrag.  Current Position: " + marker.getPosition(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        Log.d("Altourism beta", "camera changed");
+        refreshOverlay();
     }
 }
 
