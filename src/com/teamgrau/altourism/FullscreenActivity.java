@@ -7,6 +7,8 @@ import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.SystemClock;
+import android.renderscript.Allocation;
+import android.renderscript.RenderScript;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
@@ -16,6 +18,7 @@ import android.widget.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.*;
+import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
 import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
 import com.teamgrau.altourism.util.SystemUiHider;
 
@@ -71,6 +74,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      */
     private GroundOverlay mGroundOverlay;
     private GPSTracker tracker;
+    private RenderScript mRS;
+    private Allocation mInAllocation;
+    private Allocation mOutAllocation;
+    private ScriptC_invertAlpha mScript;
+    private Bitmap mBitmapIn;
+    private Bitmap mBitmapOut;
 
 
     @Override
@@ -80,10 +89,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         tracker = new TestTracker();
 
+        mRS = RenderScript.create(this);
+
         setContentView(R.layout.main_view);
 
         TextView title = (TextView) findViewById(R.id.title_bar);
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
+
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
@@ -93,7 +105,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         findViewById(R.id.menuButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ImageButton b = (ImageButton) v;
-                b.setRotation(b.getRotation()+90);
+                b.setRotation(b.getRotation() + 90);
+                View menu = findViewById(R.id.menu_contaier);
+                menu.setVisibility(menu.getVisibility()==View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
             }
         });
     }
@@ -189,9 +203,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // also the last location need rounded corners :-)
         c.drawCircle(prev.x, prev.y, 25, pathPaint);
 
-        bitmap = invertAlpha(bitmap);
+        Bitmap overlay = invertAlphaRS(bitmap);
 
-        return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+        return gOO.image(BitmapDescriptorFactory.fromBitmap(overlay));
     }
 
     /**
@@ -200,7 +214,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      * generated from renderOverlay(). The drawn path gets its alpha values
      * set to 0x00 for full transparency and the remaining pixels a value
      * with some less.
-     * TODO: replace by a renderlib version
+     * TODO: replace with a renderlib version
      * @param original Reference to the bitmap to manipulate
      * @return Reference to the manipulated bitmap
      */
@@ -209,11 +223,32 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         original.getPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
 
         for (int i = 0; i < alphas.length; i++) {
-            alphas[i] = (alphas[i]==0xff000000) ? 0x00000000 : 0xcc000000;
+            alphas[i] = (alphas[i]==0xff000000) ? 0x00000000 : 0xaa000000;
         }
 
         original.setPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
         return original;
+    }
+
+    private Bitmap invertAlphaRS(Bitmap original) {
+        Allocation alloc = Allocation.createFromBitmap(mRS, original,
+                Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+        mScript = new ScriptC_invertAlpha(mRS, getResources(), R.raw.invertalpha);
+        mScript.forEach_root(alloc);
+        alloc.copyTo(original);
+        return original;
+    }
+
+    private void createScript() {
+        mRS = RenderScript.create(this);
+        mInAllocation = Allocation.createFromBitmap(mRS, mBitmapIn,
+                Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+        mOutAllocation = Allocation.createTyped(mRS, mInAllocation.getType());
+        mScript = new ScriptC_invertAlpha(mRS, getResources(), R.raw.invertalpha);
+        //mScript.forEach_root(mInAllocation, mOutAllocation);
+        mOutAllocation.copyTo(mBitmapOut);
     }
 
     private void setUpMap() {

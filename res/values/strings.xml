@@ -21,6 +21,9 @@
     <string name="account_button">[Account]</string>
     <string name="accept">Accept</string>
     <string name="menu">Menu</string>
+    <string name="tell_story">Tell a story</string>
+    <string name="spec_options">Specify optins</string>
+    <string name="spec_tags">Specify tags</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>

@@ -17,15 +17,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingTop="3dp">
         <TextView
                 style="@style/title_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                android:id="@+id/title_bar">
-
-        </TextView>
+                android:textColor="@color/white"
+                android:id="@+id/title_bar"/>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/menu_contaier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|top"
+            android:layout_marginTop="42dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+        <ImageButton
+                android:id="@+id/tell_story_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:src="@drawable/altourism_menue_plus"
+                android:contentDescription="@string/tell_story"
+                style="?buttonBarButtonStyle"/>
+        <ImageButton
+                android:id="@+id/options_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:src="@drawable/altourism_menue_options"
+                android:contentDescription="@string/spec_options"
+                style="?buttonBarButtonStyle"/>
+        <ImageButton
+                android:id="@+id/tag_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:src="@drawable/altourism_menue_tags"
+                android:contentDescription="@string/spec_tags"
+                style="?buttonBarButtonStyle"/>
     </LinearLayout>
     <GridLayout
             android:layout_width="fill_parent"
