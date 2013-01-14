@@ -7,11 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.teamgrau.altourism.util.Angle;
+import com.teamgrau.altourism.util.Distance;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Stores and retrieves GPS-locations in a local database
@@ -24,6 +28,8 @@ public class GPSTrackerLocalDB implements GPSTracker {
 
     AltourismDBHelper AlDBHelper;
 
+    Stack<Location> last2;
+
     // define the columns to return on a PositionEntry Query
     String[] PositionEntryProjection = {
             DBDefinition.PositionEntry.COLUMN_NAME_Lat,
@@ -33,10 +39,17 @@ public class GPSTrackerLocalDB implements GPSTracker {
 
     public GPSTrackerLocalDB( Context context ){
         AlDBHelper = new AltourismDBHelper( context );
+
+        last2 = new Stack<Location>();
+        // init for proper functionality
+        for (Location l : getLocations(2))
+            last2.push(l);
     }
 
     @Override
     public void addLocation( Location position ) {
+        // only add current location when it satisfies some criteria
+        if(!relevant(position)) return;
 
         // a key-value map for the insert-method
         ContentValues values = new ContentValues();
@@ -49,6 +62,14 @@ public class GPSTrackerLocalDB implements GPSTracker {
         newRowId = db.insert( DBDefinition.PositionEntry.TABLE_NAME, null, values );
         db.close();
 
+    }
+
+    private boolean relevant(Location position) {
+        // distance to the last location must be >= 20 meters and the angle of the current
+        // vector to the last must exceed 10 radiants
+        return ((Distance.calculateDistance(position, last2.peek(), Distance.KILOMETERS)>=0.02)
+            && (Angle.computeAngle(position, last2.elementAt(1), last2.elementAt(0))>=10))
+            ? true : false;
     }
 
     @Override
