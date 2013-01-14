@@ -51,6 +51,9 @@ public class GPSTrackerLocalDB implements GPSTracker {
         // only add current location when it satisfies some criteria
         if(!relevant(position)) return;
 
+        last2.push(position);
+        last2.pop();
+
         // a key-value map for the insert-method
         ContentValues values = new ContentValues();
         values.put( DBDefinition.PositionEntry.COLUMN_NAME_Lat, position.getLatitude() );
