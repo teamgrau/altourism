@@ -157,7 +157,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         Log.d("Altourism beta", "Rendering with " + b.toString());
 
-        List<Location> lList = null;
+        List<Location> lList;
         lList = tracker.getLocations(b);
 
         List<Point> pList = new LinkedList<Point>();
@@ -179,9 +179,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                                         .positionFromBounds(b);
 
         /**
-         * TODO: improve performance for unexplored areas
-         * shortcut by c.drawRect( wholearea, paintItBlack) and return
+         * shortcut for unexplored areas
          */
+        if (lList.size()==0) {
+            c.drawARGB(0xcc, 0, 0, 0);
+            return gOO.image(BitmapDescriptorFactory.fromBitmap(bitmap));
+        }
 
         Paint pathPaint = new Paint();
         pathPaint.setColor(0xff000000); // <- transparent white
@@ -214,11 +217,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      * generated from renderOverlay(). The drawn path gets its alpha values
      * set to 0x00 for full transparency and the remaining pixels a value
      * with some less.
-     * TODO: replace with a renderlib version
      * @param original Reference to the bitmap to manipulate
      * @return Reference to the manipulated bitmap
      */
-    private Bitmap invertAlpha(Bitmap original) {
+    /*private Bitmap invertAlpha(Bitmap original) {
         int[] alphas = new int[original.getWidth() * original.getHeight()];
         original.getPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
 
@@ -228,7 +230,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         original.setPixels(alphas, 0, original.getWidth(), 0, 0, original.getWidth(), original.getHeight());
         return original;
-    }
+    }*/
 
     private Bitmap invertAlphaRS(Bitmap original) {
         Allocation alloc = Allocation.createFromBitmap(mRS, original,
@@ -238,17 +240,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mScript.forEach_root(alloc);
         alloc.copyTo(original);
         return original;
-    }
-
-    private void createScript() {
-        mRS = RenderScript.create(this);
-        mInAllocation = Allocation.createFromBitmap(mRS, mBitmapIn,
-                Allocation.MipmapControl.MIPMAP_NONE,
-                Allocation.USAGE_SCRIPT);
-        mOutAllocation = Allocation.createTyped(mRS, mInAllocation.getType());
-        mScript = new ScriptC_invertAlpha(mRS, getResources(), R.raw.invertalpha);
-        //mScript.forEach_root(mInAllocation, mOutAllocation);
-        mOutAllocation.copyTo(mBitmapOut);
     }
 
     private void setUpMap() {
