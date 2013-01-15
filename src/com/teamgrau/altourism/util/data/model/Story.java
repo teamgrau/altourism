@@ -8,11 +8,15 @@ package com.teamgrau.altourism.util.data.model;
 
 public final class Story {
 
-	String text;
+	private String text;
 	
 	// fields to come: Tags, date of entry, media, user
 	
 	public Story(String text){
 		this.text = text;
 	}
+
+    public String getStoryText(){
+        return text;
+    }
 }

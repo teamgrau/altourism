@@ -14,7 +14,7 @@ import java.util.List;
 
 public final class POI {
 	
-	String title;
+	private String title;
 
     public Location getPosition() {
         return position;
@@ -24,8 +24,8 @@ public final class POI {
         return title;
     }
 
-    Location position;
-	List<Story> geschichten;
+    private Location position;
+	private List<Story> geschichten;
 	
 	
 	public POI( String title, Location position ) {
@@ -36,6 +36,14 @@ public final class POI {
 
     public void addStory(Story story){
         geschichten.add(story);
+    }
+
+    public List<Story> getStories(int n){
+        return geschichten.subList(0, n);
+    }
+
+    public List<Story> getStories( ){
+        return geschichten.subList(0, geschichten.size());
     }
 
 }
