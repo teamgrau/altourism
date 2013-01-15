@@ -34,4 +34,8 @@ public final class POI {
 		geschichten = new ArrayList<Story>();
 	}
 
+    public void addStory(Story story){
+        geschichten.add(story);
+    }
+
 }
