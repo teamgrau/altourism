@@ -20,6 +20,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.*;
 import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
 import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
+import com.teamgrau.altourism.util.AltourismLocationSource;
 import com.teamgrau.altourism.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -73,13 +74,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
      * holds the current overlay a.k.a. war dust
      */
     private GroundOverlay mGroundOverlay;
-    private GPSTracker tracker;
+    private GPSTracker mTracker;
     private RenderScript mRS;
-    private Allocation mInAllocation;
-    private Allocation mOutAllocation;
     private ScriptC_invertAlpha mScript;
-    private Bitmap mBitmapIn;
-    private Bitmap mBitmapOut;
 
 
     @Override
@@ -87,7 +84,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     {
         super.onCreate( savedInstanceState );
 
-        tracker = new TestTracker();
+        mTracker = new TestTracker();
 
         mRS = RenderScript.create(this);
 
@@ -99,6 +96,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
+
+        AltourismLocationSource locationSource = new AltourismLocationSource ( this );
+
+        // overwrite GMap's location source
+        mMap.setLocationSource ( locationSource );
+        // register tracker to receive location updates
+        locationSource.activate ( mTracker );
 
         setUpMapIfNeeded();
         mMap.setOnCameraChangeListener(this);
@@ -158,7 +162,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Log.d("Altourism beta", "Rendering with " + b.toString());
 
         List<Location> lList;
-        lList = tracker.getLocations(b);
+        lList = mTracker.getLocations(b);
 
         List<Point> pList = new LinkedList<Point>();
         for (Location l : lList)

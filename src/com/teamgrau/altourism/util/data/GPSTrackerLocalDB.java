@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.teamgrau.altourism.util.Angle;
@@ -160,5 +161,10 @@ public class GPSTrackerLocalDB implements GPSTracker {
         c.close();
         db.close();
         return list;
+    }
+
+    @Override
+    public void onLocationChanged ( Location location ) {
+        addLocation ( location );
     }
 }
