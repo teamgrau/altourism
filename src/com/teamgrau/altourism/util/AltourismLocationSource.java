@@ -25,10 +25,9 @@ public class AltourismLocationSource implements LocationSource, LocationListener
 
         // Get the location manager
         mLocationManager = (LocationManager) ctx.getSystemService ( Context.LOCATION_SERVICE );
-        // Define the criteria how to select the locatioin provider -> use
-        // default
+        // Define the criteria how to select the locatioin provider -> use default
         Criteria criteria = new Criteria ();
-        mProvider = mLocationManager.getBestProvider ( criteria, false );
+        mProvider = mLocationManager.getBestProvider ( criteria, true );
         mLocationManager.requestLocationUpdates ( mProvider, 400, 1, this );
         mLastLocation = mLocationManager.getLastKnownLocation ( mProvider );
 

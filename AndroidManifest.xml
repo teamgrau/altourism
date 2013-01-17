@@ -43,6 +43,9 @@
             </intent-filter>
             -->
         </activity>
+
+        <service android:name=".LocationService" android:exported="false" />
+
         <meta-data
                 android:name="com.google.android.maps.v2.API_KEY"
                 android:value="AIzaSyBGDtHgdrdV88wvoMPoSop9B6upMozAHLk"/>

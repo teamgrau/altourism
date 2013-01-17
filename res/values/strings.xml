@@ -24,6 +24,8 @@
     <string name="tell_story">Tell a story</string>
     <string name="spec_options">Specify optins</string>
     <string name="spec_tags">Specify tags</string>
+    <string name="location_service_started">Altourism beta: tracking your location</string>
+    <string name="location_service_label">Altourism beta LocationService</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>
