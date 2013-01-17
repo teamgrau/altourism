@@ -29,10 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.teamgrau.altourism.util.data.GPSTracker;
-import com.teamgrau.altourism.util.data.StoryProvider;
-import com.teamgrau.altourism.util.data.StoryProviderHardcoded;
-import com.teamgrau.altourism.util.data.TestTracker;
+import com.teamgrau.altourism.util.data.*;
 import com.teamgrau.altourism.util.data.model.POI;
 import com.teamgrau.altourism.util.data.model.Story;
 
@@ -84,7 +81,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     {
         super.onCreate( savedInstanceState );
 
-        mTracker = new TestTracker();
+        mTracker = new GPSTrackerLocalDB ( this );
 
         mRS = RenderScript.create(this);
 
@@ -92,20 +89,22 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         TextView title = (TextView) findViewById(R.id.title_bar);
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
-
+        View v = findViewById ( R.id.menu_contaier );
+        v.setVisibility ( View.VISIBLE );
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
 
         AltourismLocationSource locationSource = new AltourismLocationSource ( this );
 
-        // overwrite GMap's location source
-        mMap.setLocationSource ( locationSource );
         // register tracker to receive location updates
         locationSource.activate ( mTracker );
 
-        setUpMapIfNeeded();
+        setUpMapIfNeeded ();
         mMap.setOnCameraChangeListener(this);
+        // overwrite GMap's location source
+        mMap.setLocationSource ( locationSource );
+
         findViewById(R.id.menuButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ImageButton b = (ImageButton) v;

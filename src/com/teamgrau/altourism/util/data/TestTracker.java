@@ -52,4 +52,9 @@ public class TestTracker implements GPSTracker {
         ll.add(l);
         return ll;
     }
+
+    @Override
+    public void onLocationChanged ( Location location ) {
+
+    }
 }

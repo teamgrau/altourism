@@ -5,11 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import com.google.android.gms.maps.LocationSource;
-import com.google.android.gms.maps.model.LatLng;
+import android.util.Log;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.teamgrau.altourism.util.Angle;
-import com.teamgrau.altourism.util.Distance;
+import com.teamgrau.altourism.util.Geometry.Angle;
+import com.teamgrau.altourism.util.Geometry.Distance;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
 
@@ -43,14 +42,19 @@ public class GPSTrackerLocalDB implements GPSTracker {
 
         last2 = new Stack<Location>();
         // init for proper functionality
-        for (Location l : getLocations(2))
+        List<Location> ll = getLocations ( 2 );
+        for ( Location l : ll ) {
             last2.push(l);
+        }
     }
 
     @Override
     public void addLocation( Location position ) {
         // only add current location when it satisfies some criteria
-        if(!relevant(position)) return;
+        if( last2.size ()==2 && !relevant (position) ) {
+            Log.d ( "Altourism beta", "position was chosen to be not relevant" );
+            return;
+        }
 
         last2.push(position);
         last2.pop();
@@ -65,15 +69,15 @@ public class GPSTrackerLocalDB implements GPSTracker {
         // the second argument null makes the framework insert no row if values is empty
         newRowId = db.insert( DBDefinition.PositionEntry.TABLE_NAME, null, values );
         db.close();
-
+        Log.d ("Altourism beta", "position is relevant and added to db");
     }
 
     private boolean relevant(Location position) {
-        // distance to the last location must be >= 20 meters and the angle of the current
-        // vector to the last must exceed 10 radiants
-        return ((Distance.calculateDistance(position, last2.peek(), Distance.KILOMETERS)>=0.02)
-            && (Angle.computeAngle(position, last2.elementAt(1), last2.elementAt(0))>=10))
-            ? true : false;
+        return (// is distance >= 20 meters?
+                (Distance.calculateDistance(position, last2.peek(), Distance.KILOMETERS)>=0.02)
+                // is angle >= 10 radiants?
+            &&  (Angle.computeAngle(position, last2.elementAt(1), last2.elementAt(0))>=10)
+            );
     }
 
     @Override
@@ -83,9 +87,10 @@ public class GPSTrackerLocalDB implements GPSTracker {
         String sortOrder = DBDefinition.PositionEntry._ID + " DESC";
 
         // only return the n last points (sorted descending)
-        String limit = "LIMIT 0, " + n;
+        String limit = "" + n;
 
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
+
         Cursor c = db.query(
                 DBDefinition.PositionEntry.TABLE_NAME,    // The table to query
                 PositionEntryProjection,                  // The columns to return
@@ -97,7 +102,12 @@ public class GPSTrackerLocalDB implements GPSTracker {
                 limit                                     // only return the n last points (sorted descending)
         );
 
-        c.moveToFirst();
+        // check if query returned any results?
+        if (c == null || !c.moveToFirst()) {
+            // return an empty list
+            return new LinkedList<Location> ();
+        }
+
         Location l;
         List<Location> list = new ArrayList<Location>();
         for(int i = 1; i <= n; ++i){
