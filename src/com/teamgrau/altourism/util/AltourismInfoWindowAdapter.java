@@ -3,17 +3,24 @@ package com.teamgrau.altourism.util;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.teamgrau.altourism.FullscreenActivity;
 import com.teamgrau.altourism.R;
+import com.teamgrau.altourism.util.data.StoryProvider;
+import com.teamgrau.altourism.util.data.StoryProviderHardcoded;
+import com.teamgrau.altourism.util.data.model.POI;
+import com.teamgrau.altourism.util.data.model.Story;
+
+import java.util.List;
 
 /**
  * User: thomaseichinger
@@ -84,5 +91,82 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         } else {
             snippetUi.setText("");
         }
+
+        // Now we setup the Story list and show it in the InfoWindow
+        ExpandableListView ev = (ExpandableListView) mWindow.findViewById(R.id.expandableListView);
+        ev.setAdapter(new BaseExpandableListAdapter() {
+            final StoryProvider sp = new StoryProviderHardcoded();
+            final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
+            final List<Story> geschichten = pois.get(0).getStories();
+
+
+            @Override
+            public int getGroupCount() {
+                return geschichten.size();
+            }
+
+            @Override
+            public int getChildrenCount(int groupPosition) {
+                return 1;
+            }
+
+            @Override
+            public Object getGroup(int groupPosition) {
+                return geschichten.get(groupPosition).getStoryText().substring(0, 20);
+            }
+
+            @Override
+            public Object getChild(int groupPosition, int childPosition) {
+                return geschichten.get(groupPosition).getStoryText();
+            }
+
+            @Override
+            public long getGroupId(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public long getChildId(int groupPosition, int childPosition) {
+                return childPosition;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+
+            // adapted from
+            // http://about-android.blogspot.de/2010/04/steps-to-implement-expandablelistview.html
+            public TextView getGenericView() {
+                // Layout parameters for the ExpandableListView
+                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, 64);
+
+                TextView textView = new TextView(mContext);
+                textView.setLayoutParams(lp);
+                // Center the text vertically
+                textView.setGravity(Gravity.LEFT);
+                return textView;
+            }
+
+            @Override
+            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+                TextView tv = getGenericView();
+                tv.setText(getGroup(groupPosition).toString());
+                return tv;
+            }
+
+            @Override
+            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+                TextView tv = getGenericView();
+                tv.setText(getChild(groupPosition, childPosition).toString());
+                return tv;
+            }
+
+            @Override
+            public boolean isChildSelectable(int groupPosition, int childPosition) {
+                return false;
+            }
+        });
     }
 }
