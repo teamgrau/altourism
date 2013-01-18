@@ -49,16 +49,13 @@
                 android:singleLine="false"
                 android:textColor="#ff7f7f7f"
                 android:textSize="17dp"
-                android:text="test address 54, 99999, fake city"/>
-        <ScrollView
+                android:text="+ Own story button comes here"/>
+
+        <ExpandableListView
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:id="@+id/scrollView">
-            <ExpandableListView
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/expandableListView"/>
-        </ScrollView>
+                android:groupIndicator="@null"
+                android:id="@+id/expandableListView"/>
         <TextView
                 android:id="@+id/snippet"
                 android:layout_width="wrap_content"

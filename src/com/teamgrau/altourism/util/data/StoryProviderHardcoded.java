@@ -31,8 +31,8 @@ public class StoryProviderHardcoded implements StoryProvider {
         l.setLatitude(52.513609);
         l.setLongitude(13.392119);
         POI poi = new POI("Gendarmenmarkt", l);
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
         poi.addStory(new Story("Auch andere tolle Sachen passieren hier"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
 		geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);

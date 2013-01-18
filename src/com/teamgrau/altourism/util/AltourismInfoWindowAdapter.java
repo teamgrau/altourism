@@ -92,13 +92,13 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             snippetUi.setText("");
         }
 
+
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) mWindow.findViewById(R.id.expandableListView);
         ev.setAdapter(new BaseExpandableListAdapter() {
             final StoryProvider sp = new StoryProviderHardcoded();
             final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
             final List<Story> geschichten = pois.get(0).getStories();
-
 
             @Override
             public int getGroupCount() {
@@ -135,29 +135,37 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
                 return true;
             }
 
-            // adapted from
-            // http://about-android.blogspot.de/2010/04/steps-to-implement-expandablelistview.html
-            public TextView getGenericView() {
-                // Layout parameters for the ExpandableListView
-                AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, 64);
-
-                TextView textView = new TextView(mContext);
-                textView.setLayoutParams(lp);
-                textView.setGravity(Gravity.LEFT);
-                return textView;
-            }
-
             @Override
             public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-                TextView tv = getGenericView();
+                LinearLayout l = new LinearLayout(mContext);
+                l.setOrientation(LinearLayout.HORIZONTAL);
+                l.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                l.setGravity(Gravity.CENTER);
+                ImageView iv = new ImageView(mContext);
+                iv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                iv.setScaleX(0.5f);
+                iv.setScaleY(0.5f);
+                iv.setImageResource(R.drawable.altourism_hcc_story_open);
+
+                TextView tv = new TextView(mContext);
                 tv.setText(getGroup(groupPosition).toString());
-                return tv;
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
+                tv.setPadding(5, 0, 0, 0);
+                tv.setSingleLine(true);
+
+                l.addView(iv);
+                l.addView(tv);
+                return l;
             }
 
             @Override
             public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-                TextView tv = getGenericView();
+                TextView tv = new TextView(mContext);
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 tv.setText(getChild(groupPosition, childPosition).toString());
                 return tv;
             }
