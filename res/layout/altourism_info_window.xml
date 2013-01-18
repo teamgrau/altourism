@@ -52,7 +52,7 @@
                 android:text="test address 54, 99999, fake city"/>
         <ScrollView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:id="@+id/scrollView">
             <ExpandableListView
                     android:layout_width="wrap_content"

@@ -144,7 +144,6 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
                 TextView textView = new TextView(mContext);
                 textView.setLayoutParams(lp);
-                // Center the text vertically
                 textView.setGravity(Gravity.LEFT);
                 return textView;
             }
