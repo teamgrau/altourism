@@ -346,7 +346,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             currentMarkers.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
                     .title(p.getTitle())
-                    .snippet("TODO: List of stories")
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));
         }
     }

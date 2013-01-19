@@ -3,17 +3,24 @@ package com.teamgrau.altourism.util;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.*;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.teamgrau.altourism.FullscreenActivity;
 import com.teamgrau.altourism.R;
+import com.teamgrau.altourism.util.data.StoryProvider;
+import com.teamgrau.altourism.util.data.StoryProviderHardcoded;
+import com.teamgrau.altourism.util.data.model.POI;
+import com.teamgrau.altourism.util.data.model.Story;
+
+import java.util.List;
 
 /**
  * User: thomaseichinger
@@ -84,5 +91,89 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         } else {
             snippetUi.setText("");
         }
+
+
+        // Now we setup the Story list and show it in the InfoWindow
+        ExpandableListView ev = (ExpandableListView) mWindow.findViewById(R.id.expandableListView);
+        ev.setAdapter(new BaseExpandableListAdapter() {
+            final StoryProvider sp = new StoryProviderHardcoded();
+            final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
+            final List<Story> geschichten = pois.get(0).getStories();
+
+            @Override
+            public int getGroupCount() {
+                return geschichten.size();
+            }
+
+            @Override
+            public int getChildrenCount(int groupPosition) {
+                return 1;
+            }
+
+            @Override
+            public Object getGroup(int groupPosition) {
+                return geschichten.get(groupPosition).getStoryText().substring(0, 20);
+            }
+
+            @Override
+            public Object getChild(int groupPosition, int childPosition) {
+                return geschichten.get(groupPosition).getStoryText();
+            }
+
+            @Override
+            public long getGroupId(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public long getChildId(int groupPosition, int childPosition) {
+                return childPosition;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+
+            @Override
+            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+                LinearLayout l = new LinearLayout(mContext);
+                l.setOrientation(LinearLayout.HORIZONTAL);
+                l.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                l.setGravity(Gravity.CENTER);
+                ImageView iv = new ImageView(mContext);
+                iv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                iv.setScaleX(0.5f);
+                iv.setScaleY(0.5f);
+                iv.setImageResource(R.drawable.altourism_hcc_story_open);
+
+                TextView tv = new TextView(mContext);
+                tv.setText(getGroup(groupPosition).toString());
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
+                tv.setPadding(5, 0, 0, 0);
+                tv.setSingleLine(true);
+
+                l.addView(iv);
+                l.addView(tv);
+                return l;
+            }
+
+            @Override
+            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+                TextView tv = new TextView(mContext);
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                tv.setText(getChild(groupPosition, childPosition).toString());
+                return tv;
+            }
+
+            @Override
+            public boolean isChildSelectable(int groupPosition, int childPosition) {
+                return false;
+            }
+        });
     }
 }
