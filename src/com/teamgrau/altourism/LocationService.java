@@ -93,6 +93,7 @@ public class LocationService extends Service {
                                                 .setContentTitle ( getText ( R.string.location_service_label ) )
                                                 .setContentText ( text )
                                                 .setContentIntent ( contentIntent )
+                                                .setOngoing ( true )
                                                 .build ();
 
         //Notification notification = new Notification(R.drawable.altourism_logo_positive_smal, text,
