@@ -16,11 +16,14 @@ import com.teamgrau.altourism.util.data.model.Story;
 public class StoryProviderHardcoded implements StoryProvider {
 
     private List<POI> geschichten;
-	
-	@Override
+
 	public List<POI> listPOIs(Location position, double radius) {
 		return geschichten;
 	}
+
+    public POI getPOI(Location position){
+        return geschichten.get(0);
+    }
 
     public static final String THOMAS_LOCATION_PROVIDER = "Thomas LocationProvider";
 	

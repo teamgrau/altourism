@@ -21,4 +21,14 @@ public interface StoryProvider {
 	 * @return List of POI's lying in the circle
 	 */
 	List<POI> listPOIs( Location position, double radius );
+
+
+    /**
+     * Returns the POI object that corresponds to the given position
+     * and radius
+     *
+     * @param position Center of the area
+     * @return List of POI's lying in the circle
+     */
+    POI getPOI( Location position);
 }
