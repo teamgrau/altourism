@@ -21,4 +21,15 @@ public interface StoryProvider {
 	 * @return List of POI's lying in the circle
 	 */
 	List<POI> listPOIs( Location position, double radius );
+
+    /**
+     * Asyncronous method for storyproviders who use network communications
+     * Returns a list of POI's lying in the circle-area defined by position
+     * and radius
+     *
+     * @param position Center of the area
+     * @param radius Radius of the circle-area
+     */
+    void listPOIs( Location position, double radius, OnStoryProviderFinishedListener l );
+
 }

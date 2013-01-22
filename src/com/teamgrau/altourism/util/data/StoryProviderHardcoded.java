@@ -22,6 +22,11 @@ public class StoryProviderHardcoded implements StoryProvider {
 		return geschichten;
 	}
 
+    @Override
+    public void listPOIs ( Location position, double radius, OnStoryProviderFinishedListener l ) {
+        return;
+    }
+
     public static final String THOMAS_LOCATION_PROVIDER = "Thomas LocationProvider";
 	
 	public StoryProviderHardcoded(){
