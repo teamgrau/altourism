@@ -70,6 +70,11 @@ public class StoryProviderFoursquare implements StoryProvider {
         request ( position, radius );
     }
 
+    @Override
+    public POI getPOI ( Location position ) {
+        return null;
+    }
+
     // Uses AsyncTask to create a task away from the main UI thread. This task takes a
     // URL string and uses it to create an HttpUrlConnection. Once the connection
     // has been established, the AsyncTask downloads the contents of the webpage as
