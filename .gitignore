@@ -16,6 +16,9 @@ gen/
 project.properties
 local.properties
 
+# if we used ant we should not ignore this file...
+build.xml
+
 # Eclipse project files
 .classpath
 .project
@@ -24,3 +27,6 @@ local.properties
 Altourism.iml
 google-play-services_lib.iml
 *.idea/*
+
+# a compiled file 
+res/raw/invertalpha.bc

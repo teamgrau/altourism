@@ -33,3 +33,14 @@ public interface StoryProvider {
     void listPOIs( Location position, double radius, OnStoryProviderFinishedListener l );
 
 }
+
+
+    /**
+     * Returns the POI object that corresponds to the given position
+     * and radius
+     *
+     * @param position Center of the area
+     * @return List of POI's lying in the circle
+     */
+    POI getPOI( Location position);
+}

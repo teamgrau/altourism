@@ -22,6 +22,10 @@ public class StoryProviderHardcoded implements StoryProvider {
 		return geschichten;
 	}
 
+    public POI getPOI(Location position){
+        return geschichten.get(0);
+    }
+
     @Override
     public void listPOIs ( Location position, double radius, OnStoryProviderFinishedListener l ) {
         return;
