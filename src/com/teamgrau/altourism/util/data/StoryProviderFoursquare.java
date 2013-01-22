@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class StoryProviderFoursquare implements StoryProvider{
+public class StoryProviderFoursquare implements StoryProvider {
     private static final String DBG_TAG = "StoryProviderFoursquare";
     private static final String FOURSQUARE_CLIENT_LATLNG = "ll";
     private static final String FOURSQUARE_CLIENT_ID_PARAMETER = "client_id";
@@ -32,15 +32,15 @@ public class StoryProviderFoursquare implements StoryProvider{
     private final Context mCtx;
     private List<OnStoryProviderFinishedListener> listeners;
 
-    public StoryProviderFoursquare( Context ctx ) {
+    public StoryProviderFoursquare ( Context ctx ) {
         mCtx = ctx;
-        listeners = new LinkedList<OnStoryProviderFinishedListener> (  );
+        listeners = new LinkedList<OnStoryProviderFinishedListener> ();
     }
 
-    private void request( Location l, double r ) {
+    private void request ( Location l, double r ) {
         ConnectivityManager connMgr = (ConnectivityManager) mCtx.getSystemService ( Context.CONNECTIVITY_SERVICE );
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo ();
+        if ( networkInfo != null && networkInfo.isConnected () ) {
             String urlString = FOURSQUARE_SEARCH_URL
                     + "?" + FOURSQUARE_CLIENT_LATLNG + "=" + l.getLatitude () + "," + l.getLongitude ()
                     + "&" + FOURSQUARE_CLIENT_ID_PARAMETER + "=" + FOURSQUARE_CLIENT_ID_VALUE
@@ -48,12 +48,12 @@ public class StoryProviderFoursquare implements StoryProvider{
                     + "&" + FOURSQUARE_V_DATE_PARAMETER + "=" + FOURSQUARE_V_DATE_VALUE;
 
             try {
-                new FoursquareSearchWorker ().execute ( new URL(urlString) );
+                new FoursquareSearchWorker ().execute ( new URL ( urlString ) );
             } catch ( MalformedURLException e ) {
                 e.printStackTrace ();
             }
         } else {
-            Log.d (DBG_TAG, "No network connection? " + ((networkInfo!=null)? networkInfo.getReason (): ""));
+            Log.d ( DBG_TAG, "No network connection? " + ((networkInfo != null) ?networkInfo.getReason () :"") );
         }
     }
 
@@ -95,7 +95,7 @@ public class StoryProviderFoursquare implements StoryProvider{
             // params comes from the execute() call: params[0] is the url.
             try {
                 return parseResult ( downloadUrl ( urls[ 0 ] ) );
-            } catch (IOException e) {
+            } catch ( IOException e ) {
                 e.printStackTrace ();
                 return null;
             }
@@ -104,16 +104,16 @@ public class StoryProviderFoursquare implements StoryProvider{
         @Override
         protected void onPostExecute ( List<POI> pois ) {
             super.onPostExecute ( pois );
-            for (OnStoryProviderFinishedListener l : listeners) {
+            for ( OnStoryProviderFinishedListener l : listeners ) {
                 l.onStoryProviderFinished ( pois );
             }
         }
 
-        private List<POI> parseResult( String result ) {
+        private List<POI> parseResult ( String result ) {
             Log.d ( this.getClass ().getName (), "starting to parse" );
             JSONArray a;
             JSONObject o;
-            LinkedList<POI> poiList = new LinkedList<POI> (  );
+            LinkedList<POI> poiList = new LinkedList<POI> ();
 
             try {
                 // Walking down the json tree
@@ -129,9 +129,9 @@ public class StoryProviderFoursquare implements StoryProvider{
                     o = a.getJSONObject ( i );
                     Location l = new Location ( STORYPROVIDER_FOURSQUARE );
                     l.setLongitude ( Double.parseDouble ( o.getJSONObject ( FOURSQUARE_JSON_LOCATION )
-                                                           .getString ( FOURSQUARE_JSON_LNG ) ) );
+                            .getString ( FOURSQUARE_JSON_LNG ) ) );
                     l.setLatitude ( Double.parseDouble ( o.getJSONObject ( FOURSQUARE_JSON_LOCATION )
-                                                          .getString ( FOURSQUARE_JSON_LAT ) ) );
+                            .getString ( FOURSQUARE_JSON_LAT ) ) );
                     poiList.add ( new POI ( o.getString ( FOURSQUARE_JSON_NAME ), l ) );
                 }
                 return poiList;
@@ -145,25 +145,25 @@ public class StoryProviderFoursquare implements StoryProvider{
         // Given a URL, establishes an HttpUrlConnection and retrieves
         // the web page content as a InputStream, which it returns as
         // a string.
-        private String downloadUrl(URL url) throws IOException {
+        private String downloadUrl ( URL url ) throws IOException {
             Log.d ( this.getClass ().getName (), "starting to downlad" );
 
             InputStream is = null;
 
             try {
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setReadTimeout(10000 /* milliseconds */);
-                conn.setConnectTimeout(15000 /* milliseconds */);
-                conn.setRequestMethod("GET");
-                conn.setDoInput(true);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection ();
+                conn.setReadTimeout ( 10000 /* milliseconds */ );
+                conn.setConnectTimeout ( 15000 /* milliseconds */ );
+                conn.setRequestMethod ( "GET" );
+                conn.setDoInput ( true );
                 // Starts the query
-                conn.connect();
-                int response = conn.getResponseCode();
-                Log.d(DBG_TAG, "The response is: " + response);
-                is = conn.getInputStream();
+                conn.connect ();
+                int response = conn.getResponseCode ();
+                Log.d ( DBG_TAG, "The response is: " + response );
+                is = conn.getInputStream ();
 
                 // Convert the InputStream into a string
-                String contentAsString = readIt( is );
+                String contentAsString = readIt ( is );
 
                 Log.d ( this.getClass ().getName (), "finished to downlad" );
                 return contentAsString;
@@ -171,16 +171,16 @@ public class StoryProviderFoursquare implements StoryProvider{
                 // Makes sure that the InputStream is closed after the app is
                 // finished using it.
             } finally {
-                if (is != null) {
-                    is.close();
+                if ( is != null ) {
+                    is.close ();
                 }
             }
         }
 
         // Reads an InputStream and converts it to a String.
-        public String readIt(InputStream stream) throws IOException, UnsupportedEncodingException {
+        public String readIt ( InputStream stream ) throws IOException, UnsupportedEncodingException {
             Scanner scanner = new Scanner ( stream ).useDelimiter ( "\\A" );
-            return scanner.hasNext () ? scanner.next () : "";
+            return scanner.hasNext () ?scanner.next () :"";
         }
     }
 

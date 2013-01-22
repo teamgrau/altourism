@@ -10,5 +10,5 @@ import java.util.List;
  * Time: 11:37 AM
  */
 public interface OnStoryProviderFinishedListener {
-    void onStoryProviderFinished(List<POI> pois);
+    void onStoryProviderFinished ( List<POI> pois );
 }

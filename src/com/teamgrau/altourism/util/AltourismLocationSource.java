@@ -20,7 +20,7 @@ public class AltourismLocationSource implements LocationSource, LocationListener
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     private Location mLastLocation;
 
-    public AltourismLocationSource (  Context ctx ) {
+    public AltourismLocationSource ( Context ctx ) {
         mListeners = new LinkedList<OnLocationChangedListener> ();
 
         // Get the location manager
