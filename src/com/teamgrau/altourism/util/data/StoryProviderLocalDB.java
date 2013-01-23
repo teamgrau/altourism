@@ -77,7 +77,6 @@ public class StoryProviderLocalDB implements StoryProvider {
     public POI getPOI( Location position) {
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
         String sortOrder = DBDefinition.PositionEntry._ID + " ASC";
-
         String selection =
                 DBDefinition.POI.COLUMN_NAME_Lat + " = " + position.getLatitude() + " AND " +
                 DBDefinition.POI.COLUMN_NAME_Lng + " = " + position.getLongitude() ;
@@ -101,7 +100,6 @@ public class StoryProviderLocalDB implements StoryProvider {
             poi.addStory( new Story( c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Geschichte ))));
             c.moveToNext();       // we can move 1 past the last entry w/o negative effects
         }
-
         c.close();
         db.close();
         return poi;
