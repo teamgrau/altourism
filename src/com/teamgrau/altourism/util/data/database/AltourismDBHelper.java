@@ -22,13 +22,16 @@ public class AltourismDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("PRAGMA encoding = " + DBDefinition.DB_ENCODING + "; ");
         db.execSQL(DBDefinition.CREATE_TABLE_POSITIONS_STATEMENT);
+        db.execSQL(DBDefinition.CREATE_TABLE_POIs_STATEMENT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // At this time we just drop all data and create a new DB out of the definition
         db.execSQL(DBDefinition.DELETE_ENTRIES_TABLE_POSITIONS);
+        db.execSQL(DBDefinition.DELETE_ENTRIES_TABLE_POIs);
         onCreate(db);
     }
 }

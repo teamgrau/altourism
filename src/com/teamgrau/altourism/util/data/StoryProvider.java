@@ -7,9 +7,12 @@ import com.teamgrau.altourism.util.data.model.POI;
 /**
  * Ein StoryProvider gibt Zugriff auf die interessanten Punkte in der
  * Umgebung.
+ * Vorsicht: StoryProvider geben POI's zurück, nicht nur Geschichten!
+ *
  * @author simon
  *
  */
+
 public interface StoryProvider {
 
 	/**
