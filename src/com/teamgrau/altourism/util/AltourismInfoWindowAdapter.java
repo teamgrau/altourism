@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,24 +141,28 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
                 LinearLayout l = new LinearLayout(mContext);
                 l.setOrientation(LinearLayout.HORIZONTAL);
                 l.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                l.setGravity(Gravity.CENTER);
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                l.setGravity(Gravity.RIGHT);
+                l.setPadding(0,0,0,3);
                 ImageView iv = new ImageView(mContext);
                 iv.setLayoutParams(new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                iv.setScaleX(0.5f);
-                iv.setScaleY(0.5f);
+                iv.setPadding(3, 0, 0, 0);
+                //iv.setScaleX(0.5f);
+                //iv.setScaleY(0.5f);
                 iv.setImageResource(R.drawable.altourism_hcc_story_open);
 
                 TextView tv = new TextView(mContext);
+                tv.setTextColor(0xffffffff);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
                 tv.setText(getGroup(groupPosition).toString());
                 tv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
-                tv.setPadding(5, 0, 0, 0);
-                tv.setSingleLine(true);
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)); // same heigth as the expand-arrow
+                //tv.setSingleLine(true);
+                tv.setBackgroundResource(R.color.black);
 
-                l.addView(iv);
                 l.addView(tv);
+                l.addView(iv);
                 return l;
             }
 
