@@ -36,7 +36,6 @@ public class GPSTrackerLocalDB implements GPSTracker {
             DBDefinition.PositionEntry.COLUMN_NAME_Lng
     };
 
-
     public GPSTrackerLocalDB( Context context ){
         AlDBHelper = new AltourismDBHelper( context );
 
