@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * POI models the data-object of an interesting point.
+ * A POI is uniquely identified by its coordinates.
  * 
  * @author simon
  *

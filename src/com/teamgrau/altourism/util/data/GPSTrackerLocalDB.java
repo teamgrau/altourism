@@ -81,13 +81,9 @@ public class GPSTrackerLocalDB implements GPSTracker {
 
     @Override
     public List<Location> getLocations( int n ) {
-
-        // sort descending
         String sortOrder = DBDefinition.PositionEntry._ID + " DESC";
-
         // only return the n last points (sorted descending)
         String limit = "" + n;
-
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
 
         Cursor c = db.query(
@@ -154,12 +150,14 @@ public class GPSTrackerLocalDB implements GPSTracker {
         );
 
         c.moveToFirst();
-        Location l;
         List<Location> list = new ArrayList<Location>();
         int n = c.getCount();
-        for(int i = 1; i <= n; ++i){
-            double Lat = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lat ));
-            double Lng = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lng ));
+        Location l;
+        double Lat;
+        double Lng;
+        for( int i = 1; i <= n; ++i ){
+            Lat = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lat ));
+            Lng = c.getDouble( c.getColumnIndex( DBDefinition.PositionEntry.COLUMN_NAME_Lng ));
             l = new Location( "Thomas LocationProvider" );
             l.setLatitude( Lat );
             l.setLongitude( Lng );
