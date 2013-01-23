@@ -95,7 +95,10 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 
         // Now we setup the Story list and show it in the InfoWindow
-        ExpandableListView ev = (ExpandableListView) mWindow.findViewById(R.id.expandableListView);
+        TextView tv = (TextView) view.findViewById( R.id.new_story_to_this_point );
+        tv.setTypeface( Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-bold.otf" ));
+        tv.setPaddingRelative( 6, 1, 6, 0 );
+        ExpandableListView ev = (ExpandableListView) view.findViewById( R.id.expandableListView );
         ev.setAdapter(new BaseExpandableListAdapter() {
             final StoryProvider sp = new StoryProviderHardcoded();
             final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
@@ -137,41 +140,62 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             }
 
             @Override
-            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-                LinearLayout l = new LinearLayout(mContext);
-                l.setOrientation(LinearLayout.HORIZONTAL);
-                l.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                l.setGravity(Gravity.RIGHT);
-                l.setPadding(0,0,0,3);
-                ImageView iv = new ImageView(mContext);
-                iv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                iv.setPadding(3, 0, 0, 0);
+            public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent ) {
+                if ( convertView != null ) {
+                    if ( isExpanded ){
+                        ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
+                                R.drawable.altourism_hcc_story_close );
+                    }
+                    else {
+                        ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
+                                R.drawable.altourism_hcc_story_open );
+                    }
+                    return convertView;
+                }
+                parent.setLayoutParams( new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                LinearLayout l = new LinearLayout( mContext );
+                l.setOrientation( LinearLayout.HORIZONTAL );
+                l.setLayoutParams( new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                l.setGravity( Gravity.LEFT );
+                l.setPadding( 0,0,0,3 );
+                ImageView iv = new ImageView( mContext );
+                iv.setLayoutParams( new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0 ));
+                iv.setPadding( 3, 0, 0, 0 );
                 //iv.setScaleX(0.5f);
                 //iv.setScaleY(0.5f);
-                iv.setImageResource(R.drawable.altourism_hcc_story_open);
+                iv.setImageResource( R.drawable.altourism_hcc_story_open );
 
-                TextView tv = new TextView(mContext);
-                tv.setTextColor(0xffffffff);
+                TextView tv = new TextView( mContext );
+                tv.setTypeface( Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-bold.otf" ));
+                tv.setTextColor( 0xffffffff );
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
-                tv.setText(getGroup(groupPosition).toString());
-                tv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)); // same heigth as the expand-arrow
-                //tv.setSingleLine(true);
-                tv.setBackgroundResource(R.color.black);
+                tv.setText( getGroup( groupPosition ).toString());
+                tv.setPaddingRelative( 6, 1, 6, 0 );
+                tv.setLayoutParams( new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
+                //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
+                tv.setBackgroundResource( R.color.black );
 
-                l.addView(tv);
-                l.addView(iv);
+                l.addView( tv );
+                l.addView( iv );
                 return l;
             }
 
             @Override
-            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(mContext);
-                tv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                tv.setText(getChild(groupPosition, childPosition).toString());
+            public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent ) {
+                if ( convertView != null ){
+                    ((TextView) convertView).setText( getChild( groupPosition, childPosition ).toString() );
+                    return convertView;
+                }
+                TextView tv = new TextView( mContext );
+                tv.setTypeface( Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-light.otf" ));
+                tv.setTextColor( 0xff000000 );
+                tv.setLayoutParams( new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                tv.setText( getChild( groupPosition, childPosition ).toString() );
                 return tv;
             }
 
