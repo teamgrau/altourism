@@ -30,7 +30,7 @@ public class SplashScreen extends Activity {
 
             }
 
-        }, 1000); // time in milliseconds (1 second = 1000 milliseconds) until the run() method will be called
+        }, 700); // time in milliseconds (1 second = 1000 milliseconds) until the run() method will be called
 
     }
 

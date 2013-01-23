@@ -52,7 +52,7 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
-                   OnStoryProviderFinishedListener {
+                   GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener {
 
     /**
      * Reference to GoogleMap instance
@@ -149,7 +149,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         mMap.setOnCameraChangeListener(this);
 
-        findViewById(R.id.menuButton).setOnClickListener(new View.OnClickListener() {
+        findViewById ( R.id.menuButton ).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ImageButton b = (ImageButton) v;
                 b.setRotation(b.getRotation() + 90);
@@ -321,9 +321,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mMap.setInfoWindowAdapter(mIwa);
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
-        mMap.setOnMarkerClickListener(this);
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnMarkerDragListener(this);
+        mMap.setOnMarkerClickListener( this );
+        mMap.setOnInfoWindowClickListener( this );
+        mMap.setOnMarkerDragListener( this );
+        mMap.setOnMapClickListener ( this );
 
         // Pan to see all markers in view.
         // Cannot zoom to bounds until the map has a size.
@@ -334,6 +335,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 @Override
                 public void onGlobalLayout() {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
+                    // TODO:replace by last known locations
                     for (Marker m : currentMarkers) {
                         b.include(m.getPosition());
                     }
@@ -381,43 +383,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        // This causes the marker at Humbold University to bounce into position when it is clicked.
-        //if (marker.equals(mHumUni)) {
-        /*final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        Projection proj = mMap.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        startPoint.offset(0, -100);
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 1500;
-
-        final Interpolator interpolator = new BounceInterpolator();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed / duration);
-                double lng = t * marker.getPosition().longitude + (1 - t) * startLatLng.longitude;
-                double lat = t * marker.getPosition().latitude + (1 - t) * startLatLng.latitude;
-                marker.setPosition(new LatLng(lat, lng));
-
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                }
-            }
-        });
-        //}
-        // We return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;*/
-
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation(marker.getPosition());
-        startPoint.offset(0, -200);
+        startPoint.offset(0, -300);
         final LatLng startLatLng = proj.fromScreenLocation(startPoint);
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -426,11 +395,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
-        // TODO: display information window (bubble) at right position
-        /*View v = mIwa.getInfoWindow(marker);*/
+        marker.showInfoWindow ();
 
+        View v = findViewById ( R.id.menu_contaier );
+        v.setVisibility ( View.GONE );
 
-        return false;
+        return true;
     }
 
     @Override
@@ -494,6 +464,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
                     .title(p.getTitle())
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));
+        }
+    }
+
+    @Override
+    public void onMapClick ( LatLng latLng ) {
+        View v = findViewById ( R.id.menu_contaier );
+        if ( v.getVisibility () != View.VISIBLE ) {
+            v.setVisibility ( View.VISIBLE );
         }
     }
 }
