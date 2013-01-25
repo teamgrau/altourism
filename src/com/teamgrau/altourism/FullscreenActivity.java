@@ -317,8 +317,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         // Setting an info window adapter allows us to change the both the contents and look of the
         // info window.
-        mIwa = new AltourismInfoWindowAdapter(this);
-        mMap.setInfoWindowAdapter(mIwa);
+//        mIwa = new AltourismInfoWindowAdapter(this);
+//        mMap.setInfoWindowAdapter(mIwa);
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
         mMap.setOnMarkerClickListener( this );
@@ -395,7 +395,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
-        marker.showInfoWindow ();
+        // marker.showInfoWindow ();  We now make an own infowindow!
+        LatLng position = marker.getPosition();
+        Intent infoWindow = new Intent( this, AltourismInfoWindowAdapter.class );
+        infoWindow.putExtra("Lat", position.latitude);
+        infoWindow.putExtra("Lng", position.longitude);
+        startActivity( infoWindow );
+
 
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.GONE );

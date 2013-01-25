@@ -1,11 +1,14 @@
 package com.teamgrau.altourism.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +30,7 @@ import java.util.List;
  * Date: 12/12/12
  * Time: 2:17 PM
  */
-public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+public class AltourismInfoWindowAdapter extends Activity{
     // For testing:
     public static final LatLng GEN_MARKT = new LatLng(52.513609,13.392119);
     public static final LatLng HUMB_UNI = new LatLng(52.517396, 13.394394);
@@ -36,28 +39,18 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     public static final LatLng HACK_MARKT = new LatLng(52.524159, 13.402376);
     public static final LatLng ALEXANDERPLATZ = new LatLng(52.522201,13.412848);
 
-    // These a both viewgroups containing an ImageView with id "badge" and two TextViews with id
-    // "title" and "snippet".
-    private final View mWindow;
-    private final View mContents;
-    private final Context mContext;
 
-    public AltourismInfoWindowAdapter(FullscreenActivity activity) {
-        mContext = activity.getApplicationContext();
-        mWindow = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
-        mContents = activity.getLayoutInflater().inflate(R.layout.altourism_info_window, null);
-    }
+
+    public AltourismInfoWindowAdapter(){}
 
     @Override
-    public View getInfoWindow(Marker marker) {
-        render(marker, mWindow);
-        return mWindow;
-    }
 
-    @Override
-    public View getInfoContents(Marker marker) {
-        render(marker, mContents);
-        return mContents;
+    protected void onCreate( Bundle savedInstance ){
+        super.onCreate( savedInstance );
+        Bundle myBundle = getIntent().getExtras();
+        setContentView(R.layout.altourism_info_window);
+
+        Log.d("Altourism beta", String.valueOf(myBundle.getDouble("Lat")));
     }
 
     private void render(Marker marker, View view) {
@@ -74,7 +67,7 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
             titleText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, titleText.length(), 0);
             titleText.toString().toUpperCase();
             titleUi.setText(titleText);
-            titleUi.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-bold.otf"));
+            titleUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
         } else {
             titleUi.setText("");
         }
@@ -87,14 +80,14 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             //snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
             snippetUi.setText(snippetText);
-            snippetUi.setTypeface(Typeface.createFromAsset(mContext.getAssets(), "fonts/miso-light.otf"));
+            snippetUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
         } else {
             snippetUi.setText("");
         }
 
 
         // Now we setup the Story list and show it in the InfoWindow
-        ExpandableListView ev = (ExpandableListView) mWindow.findViewById(R.id.expandableListView);
+        ExpandableListView ev = (ExpandableListView) findViewById(R.id.expandableListView);
         ev.setAdapter(new BaseExpandableListAdapter() {
             final StoryProvider sp = new StoryProviderHardcoded();
             final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
@@ -137,19 +130,19 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             @Override
             public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-                LinearLayout l = new LinearLayout(mContext);
+                LinearLayout l = new LinearLayout(getBaseContext());
                 l.setOrientation(LinearLayout.HORIZONTAL);
                 l.setLayoutParams(new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 l.setGravity(Gravity.CENTER);
-                ImageView iv = new ImageView(mContext);
+                ImageView iv = new ImageView(getBaseContext());
                 iv.setLayoutParams(new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 iv.setScaleX(0.5f);
                 iv.setScaleY(0.5f);
                 iv.setImageResource(R.drawable.altourism_hcc_story_open);
 
-                TextView tv = new TextView(mContext);
+                TextView tv = new TextView(getBaseContext());
                 tv.setText(getGroup(groupPosition).toString());
                 tv.setLayoutParams(new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
@@ -163,7 +156,7 @@ public class AltourismInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
             @Override
             public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(mContext);
+                TextView tv = new TextView(getBaseContext());
                 tv.setLayoutParams(new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 tv.setText(getChild(groupPosition, childPosition).toString());
