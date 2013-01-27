@@ -61,6 +61,7 @@
                 android:contentDescription="@string/spec_tags"
                 style="?buttonBarButtonStyle"/>
     </LinearLayout>
+    <include layout="@layout/altourism_info_window" android:id="@+id/info_window" />
     <GridLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"

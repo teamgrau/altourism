@@ -13,6 +13,8 @@ import android.location.Location;
 import android.os.*;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.*;
@@ -395,16 +397,23 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
+
+/* the activity solution
         // marker.showInfoWindow ();  We now make an own infowindow!
         LatLng position = marker.getPosition();
         Intent infoWindow = new Intent( this, AltourismInfoWindowAdapter.class );
         infoWindow.putExtra("Lat", position.latitude);
         infoWindow.putExtra("Lng", position.longitude);
         startActivity( infoWindow );
-
+*/
 
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.GONE );
+
+// the embedded View solution
+        LinearLayout infoWindow = (LinearLayout) findViewById( R.id.info_window );
+        render( marker, infoWindow );
+        infoWindow.setVisibility( View.VISIBLE );
 
         return true;
     }
@@ -479,5 +488,122 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         if ( v.getVisibility () != View.VISIBLE ) {
             v.setVisibility ( View.VISIBLE );
         }
+    }
+
+    private void render(Marker marker, View view) {
+        int badge;
+        // Use the equals() method on a Marker to check for equals.  Do not use ==.
+        badge = R.drawable.altourism_pov;
+        ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
+
+        String title = marker.getTitle();
+        TextView titleUi = ((TextView) view.findViewById(R.id.title));
+        if (title != null) {
+            // Spannable string allows us to edit the formatting of the text.
+            SpannableString titleText = new SpannableString(title);
+            titleText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, titleText.length(), 0);
+            titleText.toString().toUpperCase();
+            titleUi.setText(titleText);
+            titleUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
+        } else {
+            titleUi.setText("");
+        }
+
+        String snippet = marker.getSnippet();
+        TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
+        if (snippet != null) {
+            SpannableString snippetText = new SpannableString(snippet);
+            snippetText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, snippetText.length(), 0);
+
+            //snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
+            snippetUi.setText(snippetText);
+            snippetUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
+        } else {
+            snippetUi.setText("");
+        }
+
+
+        // Now we setup the Story list and show it in the InfoWindow
+        ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
+        ev.setAdapter( new BaseExpandableListAdapter() {
+            final StoryProvider sp = new StoryProviderHardcoded();
+            final List<POI> pois = sp.listPOIs( new Location( "Simon" ), 0.0 );
+            final List<Story> geschichten = pois.get( 0 ).getStories();
+
+            @Override
+            public int getGroupCount() {
+                return geschichten.size();
+            }
+
+            @Override
+            public int getChildrenCount( int groupPosition ) {
+                return 1;
+            }
+
+            @Override
+            public Object getGroup(int groupPosition) {
+                return geschichten.get(groupPosition).getStoryText().substring(0, 20);
+            }
+
+            @Override
+            public Object getChild(int groupPosition, int childPosition) {
+                return geschichten.get(groupPosition).getStoryText();
+            }
+
+            @Override
+            public long getGroupId(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public long getChildId(int groupPosition, int childPosition) {
+                return childPosition;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+
+            @Override
+            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+                LinearLayout l = new LinearLayout(getBaseContext());
+                l.setOrientation(LinearLayout.HORIZONTAL);
+                l.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                l.setGravity(Gravity.CENTER);
+                ImageView iv = new ImageView(getBaseContext());
+                iv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                iv.setScaleX(0.5f);
+                iv.setScaleY(0.5f);
+                iv.setImageResource(R.drawable.altourism_hcc_story_open);
+
+                TextView tv = new TextView(getBaseContext());
+                tv.setText(getGroup(groupPosition).toString());
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
+                tv.setPadding(5, 0, 0, 0);
+                tv.setSingleLine(true);
+
+                l.addView(iv);
+                l.addView(tv);
+                return l;
+            }
+
+            @Override
+            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+                TextView tv = new TextView(getBaseContext());
+                tv.setLayoutParams(new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                tv.setText(getChild(groupPosition, childPosition).toString());
+                return tv;
+            }
+
+            @Override
+            public boolean isChildSelectable(int groupPosition, int childPosition) {
+                return false;
+            }
+        });
     }
 }
