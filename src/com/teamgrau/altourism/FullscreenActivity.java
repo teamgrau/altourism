@@ -17,6 +17,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
@@ -388,7 +389,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation(marker.getPosition());
-        startPoint.offset(0, -300);
+        startPoint.offset(0, -200);
         final LatLng startLatLng = proj.fromScreenLocation(startPoint);
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -491,11 +492,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     private void render(Marker marker, View view) {
-        int badge;
-        // Use the equals() method on a Marker to check for equals.  Do not use ==.
-        badge = R.drawable.altourism_pov;
-        ((ImageView) view.findViewById(R.id.badge)).setImageResource(badge);
-
         String title = marker.getTitle();
         TextView titleUi = ((TextView) view.findViewById(R.id.title));
         if (title != null) {
@@ -509,45 +505,36 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             titleUi.setText("");
         }
 
-        String snippet = marker.getSnippet();
-        TextView snippetUi = ((TextView) view.findViewById(R.id.snippet));
-        if (snippet != null) {
-            SpannableString snippetText = new SpannableString(snippet);
-            snippetText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, snippetText.length(), 0);
-
-            //snippetText.setSpan(new ForegroundColorSpan(Color.BLUE), 12, 21, 0);
-            snippetUi.setText(snippetText);
-            snippetUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
-        } else {
-            snippetUi.setText("");
-        }
-
-
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
-        ev.setAdapter( new BaseExpandableListAdapter() {
+        ev.setAdapter(new BaseExpandableListAdapter() {
             final StoryProvider sp = new StoryProviderHardcoded();
-            final List<POI> pois = sp.listPOIs( new Location( "Simon" ), 0.0 );
-            final List<Story> geschichten = pois.get( 0 ).getStories();
+            final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
+            final List<Story> geschichten = pois.get(0).getStories();
 
             @Override
             public int getGroupCount() {
-                return geschichten.size();
+                return geschichten.size()+1;
             }
 
             @Override
-            public int getChildrenCount( int groupPosition ) {
-                return 1;
+            public int getChildrenCount(int groupPosition) {
+                if ( groupPosition != 0 ) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
             }
 
             @Override
             public Object getGroup(int groupPosition) {
-                return geschichten.get(groupPosition).getStoryText().substring(0, 20);
+                return geschichten.get( groupPosition-1 ).getStoryText().substring( 0, 20 );
             }
 
             @Override
             public Object getChild(int groupPosition, int childPosition) {
-                return geschichten.get(groupPosition).getStoryText();
+                return geschichten.get( groupPosition-1 ).getStoryText();
             }
 
             @Override
@@ -562,41 +549,77 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public boolean hasStableIds() {
-                return true;
+                return false;
             }
 
             @Override
-            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-                LinearLayout l = new LinearLayout(getBaseContext());
+            public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent ) {
+                if ( convertView != null && !( groupPosition == 0 ) ) {
+                    if ( isExpanded ){
+                        ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
+                                R.drawable.altourism_hcc_story_close );
+                    }
+                    else {
+                        ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
+                                R.drawable.altourism_hcc_story_open );
+                    }
+                    return convertView;
+                }
+                else if ( convertView != null && groupPosition == 0 ){
+                    return convertView;
+                }
+                //parent.setLayoutParams(new LinearLayout.LayoutParams(
+                //        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);
-                l.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                l.setGravity(Gravity.CENTER);
-                ImageView iv = new ImageView(getBaseContext());
+                l.setLayoutParams( new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                l.setGravity(Gravity.LEFT);
+                ImageView iv = new ImageView( getBaseContext() );
                 iv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                iv.setScaleX(0.5f);
-                iv.setScaleY(0.5f);
-                iv.setImageResource(R.drawable.altourism_hcc_story_open);
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0));
+                iv.setPadding( 3, 0, 0, 0 );
+                //iv.setScaleX(0.75f);
+                //iv.setScaleY(0.75f);
 
-                TextView tv = new TextView(getBaseContext());
-                tv.setText(getGroup(groupPosition).toString());
-                tv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)); // same heigth as the expand-arrow
-                tv.setPadding(5, 0, 0, 0);
-                tv.setSingleLine(true);
+                TextView tv = new TextView( getBaseContext() );
+                tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
+                tv.setTextColor( 0xffffffff );
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
 
-                l.addView(iv);
-                l.addView(tv);
+                tv.setPaddingRelative( 6, 1, 6, 0 );
+                tv.setLayoutParams( new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
+                //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
+                tv.setBackgroundResource(R.color.black);
+
+                if ( groupPosition == 0){
+                    tv.setText( R.string.tell_a_new_story_to_this_point );
+                    iv.setImageResource(R.drawable.altourism_hcc_story_new);
+                    l.setPadding(0, 0, 0, 10);
+                }
+                else {
+                    tv.setText( getGroup( groupPosition ).toString() );
+                    iv.setImageResource(R.drawable.altourism_hcc_story_open);
+                    l.setPadding(0, 0, 0, 3);
+                }
+                l.addView( tv );
+                l.addView( iv );
                 return l;
             }
 
             @Override
-            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(getBaseContext());
-                tv.setLayoutParams(new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                tv.setText(getChild(groupPosition, childPosition).toString());
+            public View getChildView( int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent ) {
+                if ( convertView != null ){
+                    ((TextView) convertView).setText( getChild( groupPosition, childPosition ).toString() );
+                    return convertView;
+                }
+                TextView tv = new TextView( getBaseContext() );
+                tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
+                tv.setTextColor( 0xff000000 );
+                tv.setLayoutParams( new AbsListView.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                tv.setText( getChild( groupPosition, childPosition ).toString() );
                 return tv;
             }
 

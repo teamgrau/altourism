@@ -1,29 +1,29 @@
 package com.teamgrau.altourism.util.data;
 
-import java.util.List;
-
 import android.location.Location;
 import com.teamgrau.altourism.util.data.model.POI;
+
+import java.util.List;
+
 /**
  * Ein StoryProvider gibt Zugriff auf die interessanten Punkte in der
  * Umgebung.
  * Vorsicht: StoryProvider geben POI's zurück, nicht nur Geschichten!
  *
  * @author simon
- *
  */
 
 public interface StoryProvider {
 
-	/**
-	 * Returns a list of POI's lying in the circle-area defined by position
-	 * and radius
-	 * 
-	 * @param position Center of the area 
-	 * @param radius Radius of the circle-area
-	 * @return List of POI's lying in the circle
-	 */
-	List<POI> listPOIs( Location position, double radius );
+    /**
+     * Returns a list of POI's lying in the circle-area defined by position
+     * and radius
+     *
+     * @param position Center of the area
+     * @param radius   Radius of the circle-area
+     * @return List of POI's lying in the circle
+     */
+    List<POI> listPOIs(Location position, double radius);
 
     /**
      * Asyncronous method for storyproviders who use network communications
@@ -31,9 +31,9 @@ public interface StoryProvider {
      * and radius
      *
      * @param position Center of the area
-     * @param radius Radius of the circle-area
+     * @param radius   Radius of the circle-area
      */
-    void listPOIs( Location position, double radius, OnStoryProviderFinishedListener l );
+    void listPOIs(Location position, double radius, OnStoryProviderFinishedListener l);
 
 
     /**
@@ -43,5 +43,5 @@ public interface StoryProvider {
      * @param position Center of the area
      * @return List of POI's lying in the circle
      */
-    POI getPOI( Location position);
+    POI getPOI(Location position);
 }

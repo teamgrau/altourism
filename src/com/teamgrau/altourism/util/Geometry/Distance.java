@@ -40,7 +40,7 @@ public class Distance {
      * @param bLong Longitude of point B
      * @return
      */
-    private static double calclateArc ( double aLat, double aLong, double bLat, double bLong ) {
+    private static double calclateArc(double aLat, double aLong, double bLat, double bLong) {
                 /*
                  * Convert location a and b's lattitude and longitude
                  * from degrees to radians
@@ -51,10 +51,10 @@ public class Distance {
         double bLongRad = bLong / DEGREES_TO_RADIANS;
 
         // Calculate the length of the arc that subtends point a and b
-        double t1 = Math.cos ( aLatRad ) * Math.cos ( aLongRad ) * Math.cos ( bLatRad ) * Math.cos ( bLongRad );
-        double t2 = Math.cos ( aLatRad ) * Math.sin ( aLongRad ) * Math.cos ( bLatRad ) * Math.sin ( bLongRad );
-        double t3 = Math.sin ( aLatRad ) * Math.sin ( bLatRad );
-        double tt = Math.acos ( t1 + t2 + t3 );
+        double t1 = Math.cos(aLatRad) * Math.cos(aLongRad) * Math.cos(bLatRad) * Math.cos(bLongRad);
+        double t2 = Math.cos(aLatRad) * Math.sin(aLongRad) * Math.cos(bLatRad) * Math.sin(bLongRad);
+        double t3 = Math.sin(aLatRad) * Math.sin(bLatRad);
+        double tt = Math.acos(t1 + t2 + t3);
 
         // Return a "naked" length for the calculated arc
         return tt;
@@ -68,11 +68,11 @@ public class Distance {
      * @param units  Desired units
      * @return Distance between the two points in the desired units
      */
-    public static double calculateDistance ( Address pointA, Address pointB, int units ) {
-        return calclateArc ( pointA.getLatitude (),
-                pointA.getLongitude (),
-                pointB.getLatitude (),
-                pointB.getLongitude () ) * EARTHS_RADIUS[ units ];
+    public static double calculateDistance(Address pointA, Address pointB, int units) {
+        return calclateArc(pointA.getLatitude(),
+                pointA.getLongitude(),
+                pointB.getLatitude(),
+                pointB.getLongitude()) * EARTHS_RADIUS[units];
     }
 
     /**
@@ -83,10 +83,10 @@ public class Distance {
      * @param units  Desired units
      * @return Distance between the two points in the desired units
      */
-    public static double calculateDistance ( Location pointA, Location pointB, int units ) {
-        return calclateArc ( pointA.getLatitude (),
-                pointA.getLongitude (),
-                pointB.getLatitude (),
-                pointB.getLongitude () ) * EARTHS_RADIUS[ units ];
+    public static double calculateDistance(Location pointA, Location pointB, int units) {
+        return calclateArc(pointA.getLatitude(),
+                pointA.getLongitude(),
+                pointB.getLatitude(),
+                pointB.getLongitude()) * EARTHS_RADIUS[units];
     }
 }
