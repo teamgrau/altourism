@@ -26,6 +26,7 @@
     <string name="spec_tags">Specify tags</string>
     <string name="location_service_started">Altourism beta: tracking your location</string>
     <string name="location_service_label">Altourism beta LocationService</string>
+    <string name="tell_a_new_story_to_this_point">Tell a new story to this point</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>
