@@ -554,7 +554,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public View getGroupView( int groupPosition, boolean isExpanded, View convertView, ViewGroup parent ) {
-                if ( convertView != null && !( groupPosition == 0 ) ) {
+                if ( convertView != null && groupPosition != 0 ) {
                     if ( isExpanded ){
                         ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                                 R.drawable.altourism_hcc_story_close );
@@ -563,13 +563,18 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                                 R.drawable.altourism_hcc_story_open );
                     }
+                    ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( getGroup( groupPosition ).toString());
+                    convertView.setPadding( 0, 0, 0, 3 );
                     return convertView;
                 }
-                else if ( convertView != null && groupPosition == 0 ){
+                else if ( convertView != null ){  // and: groupPosition == 0
+                    ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
+                    ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
+                            R.drawable.altourism_hcc_story_new );
+                    convertView.setPadding( 0, 0, 0, 10 );
                     return convertView;
                 }
-                //parent.setLayoutParams(new LinearLayout.LayoutParams(
-                //        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
                 LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);
                 l.setLayoutParams( new AbsListView.LayoutParams(
@@ -593,15 +598,20 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
                 tv.setBackgroundResource(R.color.black);
 
-                if ( groupPosition == 0){
+                if ( groupPosition == 0 ){
                     tv.setText( R.string.tell_a_new_story_to_this_point );
-                    iv.setImageResource(R.drawable.altourism_hcc_story_new);
-                    l.setPadding(0, 0, 0, 10);
+                    iv.setImageResource( R.drawable.altourism_hcc_story_new );
+                    l.setPadding( 0, 0, 0, 10 );
                 }
                 else {
                     tv.setText( getGroup( groupPosition ).toString() );
-                    iv.setImageResource(R.drawable.altourism_hcc_story_open);
-                    l.setPadding(0, 0, 0, 3);
+                    if ( ! isExpanded ) {
+                        iv.setImageResource( R.drawable.altourism_hcc_story_open );
+                    }
+                    else {
+                        iv.setImageResource( R.drawable.altourism_hcc_story_close );
+                    }
+                    l.setPadding( 0, 0, 0, 3 );
                 }
                 l.addView( tv );
                 l.addView( iv );
