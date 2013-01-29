@@ -20,7 +20,7 @@
               android:paddingLeft="9dp"
               android:paddingTop="0dp"
               android:paddingRight="12dp"
-              android:paddingBottom="56dp"
+              android:paddingBottom="63dp"
               android:background="@drawable/altourism_bubble_welcome"
               android:visibility="gone"
               android:orientation="vertical">
@@ -41,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="8dp"
+            android:paddingRight="9dp"
             android:scrollbars="vertical"
             android:verticalScrollbarPosition="right"
             android:scrollbarAlwaysDrawVerticalTrack="true"
