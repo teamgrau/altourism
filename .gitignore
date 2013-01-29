@@ -26,7 +26,7 @@ build.xml
 # idea local project files
 Altourism.iml
 google-play-services_lib.iml
-*.idea/*
+.idea/
 
 # a compiled file 
 res/raw/invertalpha.bc

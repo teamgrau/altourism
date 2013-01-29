@@ -131,9 +131,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         setContentView(R.layout.main_view);
 
-        TextView title = (TextView) findViewById(R.id.title_bar);
+        /*TextView title = (TextView) findViewById(R.id.title_bar);
         title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
-        title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
 
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.VISIBLE );
