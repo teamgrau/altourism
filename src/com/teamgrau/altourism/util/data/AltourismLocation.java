@@ -9,13 +9,13 @@ import com.google.android.gms.maps.model.LatLng;
  * Time: 11:18 AM
  */
 public class AltourismLocation extends Location {
-    AltourismLocation ( String provider, double lat, double lng ) {
-        super ( provider );
-        super.setLatitude ( lat );
-        super.setLongitude ( lng );
+    AltourismLocation(String provider, double lat, double lng) {
+        super(provider);
+        super.setLatitude(lat);
+        super.setLongitude(lng);
     }
 
-    public LatLng toLatLng () {
-        return new LatLng ( super.getLatitude (), super.getLongitude () );
+    public LatLng toLatLng() {
+        return new LatLng(super.getLatitude(), super.getLongitude());
     }
 }

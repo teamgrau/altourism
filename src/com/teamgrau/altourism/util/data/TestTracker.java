@@ -54,7 +54,7 @@ public class TestTracker implements GPSTracker {
     }
 
     @Override
-    public void onLocationChanged ( Location location ) {
+    public void onLocationChanged(Location location) {
 
     }
 }

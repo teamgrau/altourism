@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 /**
  * Defines names of tables and columns for the used database
- *
+ * <p/>
  * User: Simon
  */
 
@@ -13,9 +13,10 @@ public final class DBDefinition {
     public static final String DB_NAME = "AltourismDB";
     public static final String DB_ENCODING = "\"UTF-8\"";
 
-/**************************************************************
-    The table that stores GPS-positions the user has passed
-*/
+    /**
+     * ***********************************************************
+     * The table that stores GPS-positions the user has passed
+     */
     // table definition
     public static abstract class PositionEntry implements BaseColumns {
 
@@ -41,10 +42,11 @@ public final class DBDefinition {
     The table that stores GPS-positions the user has passed
  **************************************************************/
 
-/************************************************************************
-    The table that stores POI's, respective geschichten + their location
-    Begin
-*/
+    /**
+     * *********************************************************************
+     * The table that stores POI's, respective geschichten + their location
+     * Begin
+     */
     // table definition
     public static abstract class POI implements BaseColumns {
 
@@ -73,6 +75,7 @@ public final class DBDefinition {
 **************************************************************************/
 
     // No one should never ever instantiate this class as all information here is static
-    private DBDefinition() {}
+    private DBDefinition() {
+    }
 
 }

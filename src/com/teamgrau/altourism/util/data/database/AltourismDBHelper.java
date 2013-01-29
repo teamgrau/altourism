@@ -5,14 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- *
  * This class delivers a DB connection when needed like follows:
  * AltourismDBHelper ADDHelper = new AltourismDBHelper(getContext());
- *
+ * <p/>
  * User: simon
  */
 
-public class AltourismDBHelper extends SQLiteOpenHelper{
+public class AltourismDBHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1; // Should be incremented on schema update
 
