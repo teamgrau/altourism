@@ -389,7 +389,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation( marker.getPosition() );
-        startPoint.offset( 0, -350 ); // vorher: -300
+        startPoint.offset( 0, -270 ); // vorher: -300
         final LatLng startLatLng = proj.fromScreenLocation( startPoint );
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -399,19 +399,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
 
-/* the activity solution
-        // marker.showInfoWindow ();  We now make an own infowindow!
-        LatLng position = marker.getPosition();
-        Intent infoWindow = new Intent( this, AltourismInfoWindowAdapter.class );
-        infoWindow.putExtra("Lat", position.latitude);
-        infoWindow.putExtra("Lng", position.longitude);
-        startActivity( infoWindow );
-*/
-
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.GONE );
 
-// the embedded View solution
         LinearLayout infoWindow = (LinearLayout) findViewById( R.id.info_window );
         render( marker, infoWindow );
         infoWindow.setVisibility( View.VISIBLE );
@@ -590,7 +580,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 TextView tv = new TextView( getBaseContext() );
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
                 tv.setTextColor( 0xffffffff );
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
 
                 tv.setPaddingRelative( 6, 2, 6, 0 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
@@ -629,9 +619,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
                 tv.setTextColor( 0xff000000 );
                 tv.setLayoutParams( new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
                 tv.setText( getChild( groupPosition, childPosition ).toString() );
-                tv.setPadding( 0, 3, 0, 6 );
+                tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 15 );
+                tv.setPadding( 0, 3, 0, 50 );
                 tv.setPaddingRelative( 6, 0, 0, 0 );
                 return tv;
             }
