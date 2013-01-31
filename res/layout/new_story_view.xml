@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white">
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/new_story_title"
+            android:id="@+id/new_story_title"
+            android:capitalize="characters"
+            android:importantForAccessibility="yes"
+            android:gravity="center"
+            android:textSize="27dp"
+            android:textStyle="bold" android:inputType="textNoSuggestions"/>
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView">
+        <LinearLayout android:orientation="vertical"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content" android:paddingLeft="15dp" android:paddingRight="15dp">
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:id="@+id/new_story_headline"
+                    android:background="@drawable/altourism_new_story_bubble"
+                    android:textColor="@color/white"
+                    android:gravity="top"
+                    android:maxLines="2"
+                    android:inputType="textNoSuggestions"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/new_story_headline_field"
+                    android:textCursorDrawable="@null"
+                    />
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/new_story_body"
+                    android:textColor="@color/white"
+                    android:background="@drawable/altourism_new_story_bubble"
+                    android:gravity="top"
+                    android:layout_marginTop="10dp"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:hint="@string/new_story_body"
+                    android:textCursorDrawable="@null"/>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp" android:layout_marginTop="10dp">
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/new_story_picture" android:background="@drawable/altourism_new_story_bubble"
+                        android:src="@drawable/altourism_hcc_poi_camra" android:minHeight="40dp" android:maxHeight="40dp"
+                        android:layout_gravity="left"/>
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/new_story_movie" android:background="@drawable/altourism_new_story_bubble"
+                        android:src="@drawable/altourism_hcc_poi_video"
+                        android:layout_marginLeft="7dp"/>
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/new_story_audio" android:background="@drawable/altourism_new_story_bubble"
+                        android:src="@drawable/altourism_hcc_poi_micro" android:layout_marginLeft="7dp"/>
+            </LinearLayout>
+            <HorizontalScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/horizontalScrollView">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/new_story_media_container"
+                        android:importantForAccessibility="no">
+                    <ImageView
+                            android:layout_width="93dp"
+                            android:layout_height="100dp"
+                            android:id="@+id/ref_layout_view" android:background="@drawable/altourism_new_story_bubble"
+                            android:layout_marginRight="5dp" android:visibility="gone"/>
+                    <ImageButton
+                            android:layout_width="93dp"
+                            android:layout_height="fill_parent"
+                            android:id="@+id/imageButton9" android:background="@drawable/altourism_new_story_bubble"
+                            android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
+                            android:layout_marginRight="5dp"/>
+                    <ImageButton android:layout_width="wrap_content" android:layout_height="fill_parent"
+                                 android:id="@+id/imageButton" android:background="@drawable/altourism_new_story_bubble"
+                                 android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
+                                 android:maxHeight="40dp" android:layout_marginRight="5dp"/>
+                    <ImageButton android:layout_width="wrap_content" android:layout_height="fill_parent"
+                                 android:id="@+id/imageButton2" android:background="@drawable/altourism_new_story_bubble"
+                                 android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
+                                 android:maxHeight="40dp" android:layout_marginRight="5dp"/>
+                    <ImageButton android:layout_width="wrap_content" android:layout_height="fill_parent"
+                                 android:id="@+id/imageButton1" android:background="@drawable/altourism_new_story_bubble"
+                                 android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
+                                 android:maxHeight="40dp" android:layout_marginRight="5dp"/>
+                </LinearLayout>
+            </HorizontalScrollView>
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp" android:layout_marginTop="10dp">
+                <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/imageButton3" android:src="@drawable/navigation_cancel"
+                        android:background="@color/black"/>
+                <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:text="Next"
+                        android:id="@+id/nextButton"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="135dp" android:background="@color/black"
+                        android:textColor="@color/white" android:onClick="onClick"/>
+                <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/nextImageButton"
+                        android:src="@drawable/navigation_accept"
+                        android:background="@color/black" android:onClick="onClick"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

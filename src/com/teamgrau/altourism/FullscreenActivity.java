@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.*;
 import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
 import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
 import com.teamgrau.altourism.util.AltourismLocationSource;
+import com.teamgrau.altourism.util.AltourismNewStoryView;
 import com.teamgrau.altourism.util.SystemUiHider;
 
 import android.annotation.TargetApi;
@@ -55,7 +56,7 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
-                   GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener {
+                   GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener, View.OnClickListener {
 
     /**
      * Reference to GoogleMap instance
@@ -143,6 +144,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
+
+        ImageButton b = (ImageButton) findViewById ( R.id.tell_story_button );
+        b.setOnClickListener ( this );
 
         doBindService ();
 
@@ -306,6 +310,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     private void setUpMap() {
 
         mMap.setMyLocationEnabled(true);
+        mMap.setMapType ( GoogleMap.MAP_TYPE_SATELLITE );
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         // Hide the zoom controls as the button panel will cover it.
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -638,5 +643,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onClick ( View view ) {
+        //if ( view.getId () == R.id.tell_story_button ) {
+            Intent newStoryView = new Intent( this, AltourismNewStoryView.class );
+            startActivity( newStoryView );
+        //}
     }
 }

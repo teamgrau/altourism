@@ -21,7 +21,7 @@
               android:paddingTop="0dp"
               android:paddingRight="12dp"
               android:paddingBottom="56dp"
-              android:background="@drawable/altourism_bubble_welcome"
+              android:background="@drawable/pov_bubble"
               android:visibility="gone"
               android:orientation="vertical">
 
