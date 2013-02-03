@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
                 android:textColor="@color/white"
+                android:textSize="34dp"
                 android:id="@+id/title_bar"/>
     </LinearLayout>
     <LinearLayout
@@ -33,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|top"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="47dp"
             android:orientation="vertical"
             android:visibility="invisible">
         <ImageButton

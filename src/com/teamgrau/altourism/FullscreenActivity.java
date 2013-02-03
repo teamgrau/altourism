@@ -389,7 +389,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation( marker.getPosition() );
-        startPoint.offset( 0, -270 ); // vorher: -300
+        startPoint.offset( 0, -330 ); // vorher: -300
         final LatLng startLatLng = proj.fromScreenLocation( startPoint );
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -501,6 +501,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 findViewById( R.id.info_window ).setVisibility( View.GONE );
             }
         });
+        ((TextView) view.findViewById( R.id.share_on )).
+                setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-light.otf" ));
 
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
@@ -593,7 +595,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setPaddingRelative( 6, 2, 6, 6 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
-                //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
+                tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
                 tv.setBackgroundResource(R.color.black);
 
                 if ( groupPosition == 0 ){
@@ -602,7 +604,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     l.setPadding( 0, 0, 0, 12 );
                 }
                 else {
-                    tv.setText( getGroup( groupPosition ).toString() );
+                    tv.setText( getGroup( groupPosition ).toString() + "\n" );
                     if ( ! isExpanded ) {
                         iv.setImageResource( R.drawable.altourism_hcc_story_open );
                     }
