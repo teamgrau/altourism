@@ -502,7 +502,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             }
         });
         ((TextView) view.findViewById( R.id.share_on )).
-                setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-light.otf" ));
+                setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
 
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
@@ -563,7 +563,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                                 R.drawable.altourism_hcc_story_open );
                     }
-                    ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( getGroup( groupPosition ).toString());
+                    ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(0)).
+                            setText( getGroup( groupPosition ).toString());
+                    ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(1)).
+                            setText( "Tags: Grafiti, Urban, Secret" );
                     convertView.setPadding( 0, 0, 0, 3 );
                     return convertView;
                 }
@@ -591,20 +594,40 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
                 tv.setTextColor( 0xffffffff );
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
-
-                tv.setPaddingRelative( 6, 2, 6, 6 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1 )); // same heigth as the expand-arrow
                 tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
                 tv.setBackgroundResource(R.color.black);
 
                 if ( groupPosition == 0 ){
                     tv.setText( R.string.tell_a_new_story_to_this_point );
+                    tv.setPaddingRelative( 6, 2, 6, 6 );
                     iv.setImageResource( R.drawable.altourism_hcc_story_new );
                     l.setPadding( 0, 0, 0, 12 );
+                    l.addView( tv );
+                    l.addView( iv );
                 }
                 else {
-                    tv.setText( getGroup( groupPosition ).toString() + "\n" );
+                    LinearLayout tl = new LinearLayout( getBaseContext() );
+                    tl.setBackgroundResource( R.color.black );
+                    tl.setLayoutParams( new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                    tl.setOrientation( LinearLayout.VERTICAL );
+                    tl.setPadding( 6, 2, 6, 6 );
+                    TextView tt = new TextView( getBaseContext() );
+                    tt.setLayoutParams( new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0 ));
+                    tt.setBackgroundResource( R.color.black );
+                    tt.setTextColor( 0xffffffff );
+                    tt.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 24 );
+                    tt.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
+                    tt.setSingleLine( true );
+                    tt.setText( "Tags: Grafiti, Urban, Secret" );
+                    tv.setText( getGroup( groupPosition ).toString());
+                    tl.addView( tv );
+                    tl.addView( tt );
+                    l.addView( tl );
+                    l.addView( iv );
                     if ( ! isExpanded ) {
                         iv.setImageResource( R.drawable.altourism_hcc_story_open );
                     }
@@ -612,10 +635,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         iv.setImageResource( R.drawable.altourism_hcc_story_close );
                     }
                     l.setPadding( 0, 0, 0, 3 );
-                    l.setClickable( false );
                 }
-                l.addView( tv );
-                l.addView( iv );
                 return l;
             }
 
