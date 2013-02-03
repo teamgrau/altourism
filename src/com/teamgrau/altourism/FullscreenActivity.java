@@ -494,9 +494,17 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         } else {
             titleUi.setText("");
         }
+        ImageView ib = (ImageView) view.findViewById( R.id.close_button );
+        ib.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                findViewById( R.id.info_window ).setVisibility( View.GONE );
+            }
+        });
 
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
+//        ev.setScrollbarFadingEnabled( false );
         ev.setAdapter(new BaseExpandableListAdapter() {
             final StoryProvider sp = new StoryProviderHardcoded();
             final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
@@ -539,7 +547,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public boolean hasStableIds() {
-                return false;
+                return true;
             }
 
             @Override
@@ -561,7 +569,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
                     ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                             R.drawable.altourism_hcc_story_new );
-                    convertView.setPadding( 0, 0, 0, 10 );
+                    convertView.setPadding( 0, 0, 0, 12 );
                     return convertView;
                 }
 
@@ -582,7 +590,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setTextColor( 0xffffffff );
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
 
-                tv.setPaddingRelative( 6, 2, 6, 0 );
+                tv.setPaddingRelative( 6, 2, 6, 6 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
                 //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
@@ -591,7 +599,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 if ( groupPosition == 0 ){
                     tv.setText( R.string.tell_a_new_story_to_this_point );
                     iv.setImageResource( R.drawable.altourism_hcc_story_new );
-                    l.setPadding( 0, 0, 0, 10 );
+                    l.setPadding( 0, 0, 0, 12 );
                 }
                 else {
                     tv.setText( getGroup( groupPosition ).toString() );
@@ -622,8 +630,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
                 tv.setText( getChild( groupPosition, childPosition ).toString() );
                 tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 15 );
-                tv.setPadding( 0, 3, 0, 50 );
-                tv.setPaddingRelative( 6, 0, 0, 0 );
+                //parent.setPadding( 0, 3, 0, 6 );
+                //tv.setPadding( 0, 3, 0, 50 );
+                tv.setPaddingRelative( 6, 3, 6, 6 );
                 return tv;
             }
 
