@@ -481,7 +481,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         }
     }
 
-    private void render(Marker marker, View view) {
+    private void render( final Marker marker, View view ) {
         String title = marker.getTitle();
         TextView titleUi = ((TextView) view.findViewById( R.id.title ));
         if ( title != null ) {
@@ -492,7 +492,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             titleUi.setPaintFlags(titleUi.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             titleUi.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
         } else {
-            titleUi.setText("");
+            titleUi.setText( "" );
         }
         ImageView ib = (ImageView) view.findViewById( R.id.close_button );
         ib.setOnClickListener( new View.OnClickListener() {
@@ -504,13 +504,29 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         ((TextView) view.findViewById( R.id.share_on )).
                 setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
 
+
+        final Marker m = marker;
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
-//        ev.setScrollbarFadingEnabled( false );
-        ev.setAdapter(new BaseExpandableListAdapter() {
-            final StoryProvider sp = new StoryProviderHardcoded();
-            final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
-            final List<Story> geschichten = pois.get(0).getStories();
+        ev.setAdapter( new BaseExpandableListAdapter() {
+            final StoryProvider sp = new StoryProviderLocalDB( getBaseContext() );
+
+            // insert test stories first
+            StoryArchivist sa = new StoryArchivistLocalDB( getBaseContext() );
+            Location p = new Location( "Simon" );
+            {p.setLongitude(marker.getPosition().longitude);
+                p.setLatitude(marker.getPosition().latitude);
+                sa.storeGeschichte(p,new Story("Die große Granitwanne vor dem Museum stammt aus einem größeren Findling in der Nähe " +
+                        " von Angermünde. Eine ineterssante Geschichte steckt dahinter"));
+                sa.storeGeschichte(p,new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!"));
+                sa.storeGeschichte(p,new Story("Innerhalb einer Stunde treffen sich an der Weltzeituhr ca 100 Gruppen. Zählt bei " +
+                        "einem Kaffee mal mit!"));
+                sa.storeGeschichte(p,new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen."));
+
+            }
+
+            final POI poi = sp.getPOI(p);
+            final List<Story> geschichten = poi.getStories();
 
             @Override
             public int getGroupCount() {

@@ -33,7 +33,7 @@ public class StoryArchivistLocalDB implements StoryArchivist {
         SQLiteDatabase db = AlDBHelper.getWritableDatabase();
         long newRowId;
         // the second argument null makes the framework insert no row if values is empty
-        newRowId = db.insert(DBDefinition.POI.TABLE_NAME, null, values);
+        newRowId = db.insert( DBDefinition.POI.TABLE_NAME, null, values );
         Log.d("Altourism beta", "inserted Story into DB, new rowId is: " + newRowId);
         db.close();
     }

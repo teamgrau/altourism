@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.util.Log;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
 import com.teamgrau.altourism.util.data.model.POI;
@@ -92,6 +93,7 @@ public class StoryProviderLocalDB implements StoryProvider {
         c.moveToFirst();
         POI poi = new POI("test Title", position);
         int n = c.getCount();
+        Log.d("Altourism beta", "stories got: " + n);
         String text;
         for (int i = 1; i <= n; ++i) {
             poi.addStory(new Story(c.getString(c.getColumnIndex(DBDefinition.POI.COLUMN_NAME_Geschichte))));
