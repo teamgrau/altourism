@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -15,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.teamgrau.altourism.R;
+import com.teamgrau.altourism.util.data.AltourismLocation;
+import com.teamgrau.altourism.util.data.StoryArchivist;
+import com.teamgrau.altourism.util.data.StoryArchivistLocalDB;
+import com.teamgrau.altourism.util.data.model.Story;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -27,11 +32,16 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
     private static final int MEDIA_TYPE_IMAGE = 1;
     private static final int MEDIA_TYPE_VIDEO = 2;
 
-    private LinkedList<Uri> fileUris;
+    private static LinkedList<Uri> fileUris;
+    private Location mLocation;
 
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
+
+        mLocation = new AltourismLocation ( "NewStory",
+                                            getIntent ().getDoubleExtra ( "lat", 0.0 ),
+                                            getIntent ().getDoubleExtra ( "lng", 0.0 ));
 
         fileUris = new LinkedList<Uri> (  );
 
@@ -75,7 +85,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             i.setVisibility ( View.VISIBLE );
             setPic ( i, fileUri );
 
-            LinearLayout ll = (LinearLayout) findViewById ( R.id.new_story_media_container );
+            LinearLayout ll = (LinearLayout) findViewById ( R.id.picture_container );
             ll.addView ( i, ll.getChildCount ()-1 );
         }
     }
@@ -99,6 +109,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
+        String imageType = bmOptions.outMimeType;
 
         Bitmap bitmap = BitmapFactory.decodeFile(filePath.toString (), bmOptions);
         v.setImageBitmap(bitmap);
@@ -156,10 +167,19 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         if ( view.getId () == R.id.nextButton || view.getId () == R.id.nextImageButton ) {
             EditText et = (EditText) findViewById ( R.id.new_story_headline );
             String headline = et.getText ().toString ();
-            Toast.makeText ( this, headline, Toast.LENGTH_LONG ).show ();
+            //Toast.makeText ( this, headline, Toast.LENGTH_LONG ).show ();
             et = (EditText) findViewById ( R.id.new_story_body );
             String body = et.getText ().toString ();
-            Toast.makeText ( this, body, Toast.LENGTH_LONG ).show ();
+            //Toast.makeText ( this, body, Toast.LENGTH_LONG ).show ();
+            if ( body.length ()==0 || headline.length ()==0 ) {
+                Toast.makeText ( this, "Please enter some text to proceed", Toast.LENGTH_LONG ).show ();
+                return;
+            }
+            StoryArchivist sa = new StoryArchivistLocalDB ( this );
+            sa.storeGeschichte ( new Location ( mLocation ),
+                                 new Story ( body ) );
+            setResult ( RESULT_OK );
+            finish ();
         }
         else if ( view.getId () == R.id.new_story_picture ) {
             // create Intent to take a picture and return control to the calling application
@@ -187,6 +207,10 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
 
             // start the Video Capture Intent
             startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+        }
+        else if ( view.getId () == R.id.new_story_cancel ) {
+            setResult ( RESULT_CANCELED );
+            finish ();
         }
         else {
             Toast.makeText ( this, "not implemnented yet", Toast.LENGTH_SHORT ).show ();

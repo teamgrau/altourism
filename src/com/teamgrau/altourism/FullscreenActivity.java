@@ -148,6 +148,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         ImageButton b = (ImageButton) findViewById ( R.id.tell_story_button );
         b.setOnClickListener ( this );
 
+        findViewById ( R.id.close_bubble ).setOnClickListener ( this );
+        //findViewById ( R.id.add_story_image ).setOnClickListener ( this );
+
         doBindService ();
 
         setUpMapIfNeeded ();
@@ -484,6 +487,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         if ( v.getVisibility () != View.VISIBLE ) {
             v.setVisibility ( View.VISIBLE );
         }
+        ((LinearLayout) findViewById( R.id.info_window )).setVisibility ( View.GONE );
     }
 
     private void render(Marker marker, View view) {
@@ -641,8 +645,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     @Override
     public void onClick ( View view ) {
+        if ( view.getId () == R.id.close_bubble ) {
+            findViewById ( R.id.info_window ).setVisibility ( View.GONE );
+            return;
+        }
         //if ( view.getId () == R.id.tell_story_button ) {
             Intent newStoryView = new Intent( this, AltourismNewStoryView.class );
+            newStoryView.putExtra ( "lat", mMap.getMyLocation ().getLatitude () );
+            newStoryView.putExtra ( "lng", mMap.getMyLocation ().getLongitude () );
             startActivity( newStoryView );
         //}
     }

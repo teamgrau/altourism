@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="match_parent"
               android:background="@color/white">
     <TextView
             android:layout_width="fill_parent"
@@ -14,11 +14,14 @@
             android:importantForAccessibility="yes"
             android:gravity="center"
             android:textSize="34dp"
-            android:textStyle="bold" android:inputType="textNoSuggestions"/>
+            android:textStyle="bold" android:inputType="textNoSuggestions" android:layout_alignParentLeft="true"
+            android:layout_marginLeft="0dp" android:layout_alignParentTop="true" android:layout_marginTop="0dp"/>
     <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/scrollView">
+            android:id="@+id/scrollView" android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/new_story_title">
         <LinearLayout android:orientation="vertical"
                       android:layout_width="fill_parent"
                       android:layout_height="wrap_content" android:paddingLeft="15dp" android:paddingRight="15dp">
@@ -49,7 +52,7 @@
             <RelativeLayout
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
-                    android:layout_height="100dp" android:layout_marginTop="10dp">
+                    android:layout_height="100dp" android:layout_marginTop="10dp" android:id="@+id/actions_container">
                 <ImageButton
                         android:layout_width="93dp"
                         android:layout_height="fill_parent"
@@ -99,18 +102,15 @@
                         android:layout_gravity="right"/>
             </RelativeLayout>-->
 
-            <HorizontalScrollView
+            <RelativeLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    android:id="@+id/horizontalScrollView">
+                    android:layout_height="fill_parent" android:layout_marginTop="10dp"
+                    android:id="@+id/taken_container">
                 <LinearLayout
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_width="wrap_content"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="10dp"
-                        android:id="@+id/new_story_media_container"
-                        android:importantForAccessibility="no">
+                        android:layout_height="fill_parent" android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true" android:id="@+id/picture_container">
                     <ImageView
                             android:layout_width="93dp"
                             android:layout_height="100dp"
@@ -121,48 +121,62 @@
                             android:layout_height="fill_parent"
                             android:id="@+id/imageButton9" android:background="@drawable/altourism_new_story_bubble"
                             android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
-                            android:layout_marginRight="25dp"/>
+                            android:layout_marginRight="37dp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent" android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" android:id="@+id/movie_container">
                     <ImageButton android:layout_width="93dp" android:layout_height="fill_parent"
                                  android:id="@+id/imageButton" android:background="@drawable/altourism_new_story_bubble"
                                  android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
-                                 android:maxHeight="40dp" android:layout_marginRight="25dp"/>
+                                 android:maxHeight="40dp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent" android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true" android:id="@+id/audio_container">
                     <ImageButton android:layout_width="93dp" android:layout_height="fill_parent"
                                  android:id="@+id/imageButton2" android:background="@drawable/altourism_new_story_bubble"
                                  android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
-                                 android:maxHeight="40dp" android:layout_marginRight="5dp"/>
+                                 android:maxHeight="40dp"/>
                 </LinearLayout>
-            </HorizontalScrollView>
-            <RelativeLayout
-                    android:orientation="horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp" android:layout_marginTop="10dp">
-                <ImageButton
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:id="@+id/imageButton3" android:src="@drawable/navigation_cancel"
-                        android:background="@color/black" android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="0dp" android:layout_alignParentTop="true"
-                        android:layout_marginTop="0dp"/>
-                <Button
-                        android:layout_width="80dp"
-                        android:layout_height="fill_parent"
-                        android:text="Next"
-                        android:id="@+id/nextButton"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginLeft="0dp" android:background="@color/black"
-                        android:textColor="@color/white" android:onClick="onClick" android:layout_alignParentLeft="false"
-                        android:layout_alignParentTop="true" android:layout_marginTop="0dp"
-                        android:layout_toLeftOf="@+id/nextImageButton" android:layout_alignParentRight="false"/>
-                <ImageButton
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:id="@+id/nextImageButton"
-                        android:src="@drawable/navigation_accept"
-                        android:background="@color/black" android:onClick="onClick"
-                        android:layout_alignParentLeft="false" android:layout_marginLeft="0dp"
-                        android:layout_alignParentTop="true" android:layout_marginTop="0dp"
-                        android:layout_alignParentRight="true"/>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp" android:id="@+id/control_container"
+            android:layout_alignParentLeft="true" android:layout_alignParentTop="false"
+            android:layout_alignParentBottom="true" android:paddingLeft="15dp" android:paddingRight="15dp">
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/new_story_cancel" android:src="@drawable/navigation_cancel"
+                android:background="@color/black" android:layout_alignParentLeft="true"
+                android:layout_marginLeft="0dp" android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"/>
+        <Button
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:text="Next"
+                android:id="@+id/nextButton"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="0dp" android:background="@color/black"
+                android:textColor="@color/white" android:onClick="onClick" android:layout_alignParentLeft="false"
+                android:layout_alignParentTop="true" android:layout_marginTop="0dp"
+                android:layout_toLeftOf="@+id/nextImageButton" android:layout_alignParentRight="false"/>
+        <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/nextImageButton"
+                android:src="@drawable/navigation_accept"
+                android:background="@color/black" android:onClick="onClick"
+                android:layout_alignParentLeft="false" android:layout_marginLeft="0dp"
+                android:layout_alignParentTop="true" android:layout_marginTop="0dp"
+                android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</RelativeLayout>

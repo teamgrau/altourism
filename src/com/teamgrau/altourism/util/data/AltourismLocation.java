@@ -9,7 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
  * Time: 11:18 AM
  */
 public class AltourismLocation extends Location {
-    AltourismLocation(String provider, double lat, double lng) {
+    public AltourismLocation(String provider, double lat, double lng) {
         super(provider);
         super.setLatitude(lat);
         super.setLongitude(lng);

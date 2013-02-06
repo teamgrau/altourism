@@ -39,24 +39,24 @@ public class GPSTrackerLocalDB implements GPSTracker {
     public GPSTrackerLocalDB(Context context) {
         AlDBHelper = new AltourismDBHelper(context);
 
-        last2 = new Stack<Location>();
+        /*last2 = new Stack<Location>();
         // init for proper functionality
-        List<Location> ll = getLocations(2);
+        /*List<Location> ll = getLocations(2);
         for (Location l : ll) {
             last2.push(l);
-        }
+        }*/
     }
 
     @Override
     public void addLocation(Location position) {
         // only add current location when it satisfies some criteria
-        if (last2.size() == 2 && !relevant(position)) {
+        /*if (last2.size() == 2 && !relevant(position)) {
             Log.d("Altourism beta", "position was chosen to be not relevant");
             return;
         }
 
         last2.push(position);
-        last2.pop();
+        last2.pop();*/
 
         // a key-value map for the insert-method
         ContentValues values = new ContentValues();
