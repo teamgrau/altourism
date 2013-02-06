@@ -1,10 +1,12 @@
-package com.teamgrau.altourism.util.data.database;
+package com.teamgrau.altourism.util.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
+import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
+import com.teamgrau.altourism.util.data.database.DBDefinition;
 import com.teamgrau.altourism.util.data.model.Story;
 
 /**

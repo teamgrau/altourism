@@ -1,4 +1,4 @@
-package com.teamgrau.altourism.util.data.database;
+package com.teamgrau.altourism.util.data;
 
 import android.location.Location;
 import com.teamgrau.altourism.util.data.model.Story;

@@ -393,9 +393,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     public boolean onMarkerClick(final Marker marker) {
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        startPoint.offset(0, -200);
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        Point startPoint = proj.toScreenLocation( marker.getPosition() );
+        startPoint.offset( 0, -270 ); // vorher: -300
+        final LatLng startLatLng = proj.fromScreenLocation( startPoint );
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
                 .zoom(mMap.getCameraPosition().zoom)
@@ -404,19 +404,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
 
 
-/* the activity solution
-        // marker.showInfoWindow ();  We now make an own infowindow!
-        LatLng position = marker.getPosition();
-        Intent infoWindow = new Intent( this, AltourismInfoWindowAdapter.class );
-        infoWindow.putExtra("Lat", position.latitude);
-        infoWindow.putExtra("Lng", position.longitude);
-        startActivity( infoWindow );
-*/
-
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.GONE );
 
-// the embedded View solution
         LinearLayout infoWindow = (LinearLayout) findViewById( R.id.info_window );
         render( marker, infoWindow );
         infoWindow.setVisibility( View.VISIBLE );
@@ -498,14 +488,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private void render(Marker marker, View view) {
         String title = marker.getTitle();
-        TextView titleUi = ((TextView) view.findViewById(R.id.title));
-        if (title != null) {
+        TextView titleUi = ((TextView) view.findViewById( R.id.title ));
+        if ( title != null ) {
             // Spannable string allows us to edit the formatting of the text.
-            SpannableString titleText = new SpannableString(title);
-            titleText.setSpan(new ForegroundColorSpan(Color.DKGRAY), 0, titleText.length(), 0);
-            titleText.toString().toUpperCase();
-            titleUi.setText(titleText);
-            titleUi.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
+            SpannableString titleText = new SpannableString( title );
+            titleText.setSpan( new ForegroundColorSpan( Color.DKGRAY ), 0, titleText.length(), 0 );
+            titleUi.setText(titleText.toString().toUpperCase());
+            titleUi.setPaintFlags(titleUi.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            titleUi.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
         } else {
             titleUi.setText("");
         }
@@ -595,9 +585,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 TextView tv = new TextView( getBaseContext() );
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
                 tv.setTextColor( 0xffffffff );
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
 
-                tv.setPaddingRelative( 6, 1, 6, 0 );
+                tv.setPaddingRelative( 6, 2, 6, 0 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
                 //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
@@ -617,6 +607,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         iv.setImageResource( R.drawable.altourism_hcc_story_close );
                     }
                     l.setPadding( 0, 0, 0, 3 );
+                    l.setClickable( false );
                 }
                 l.addView( tv );
                 l.addView( iv );
@@ -633,8 +624,11 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
                 tv.setTextColor( 0xff000000 );
                 tv.setLayoutParams( new AbsListView.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
                 tv.setText( getChild( groupPosition, childPosition ).toString() );
+                tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 15 );
+                tv.setPadding( 0, 3, 0, 50 );
+                tv.setPaddingRelative( 6, 0, 0, 0 );
                 return tv;
             }
 
