@@ -49,13 +49,13 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
- * 
+ *
  * @see SystemUiHider
  */
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
-                   GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
-                   GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener {
+        GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
+        GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener {
 
     /**
      * Reference to GoogleMap instance
@@ -237,7 +237,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Canvas c = new Canvas(bitmap);
 
         GroundOverlayOptions gOO = new GroundOverlayOptions()
-                                        .positionFromBounds(b);
+                .positionFromBounds(b);
 
         /**
          * shortcut for unexplored areas
@@ -579,20 +579,28 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                                 R.drawable.altourism_hcc_story_open );
                     }
-                    ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(0)).
-                            setText( getGroup( groupPosition ).toString());
-                    ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(1)).
-                            setText( "Tags: Grafiti, Urban, Secret" );
-                    convertView.setPadding( 0, 0, 0, 3 );
-                    return convertView;
+                    if (((LinearLayout) convertView).getChildAt( 0 ) instanceof LinearLayout ) {
+                        ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(0)).
+                                setText( getGroup( groupPosition ).toString());
+                        ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(1)).
+                                setText( "Tags: Grafiti, Urban, Secret" );
+                        convertView.setPadding( 0, 0, 0, 3 );
+                        return convertView;
+                    }
+                    else { // convertView is the add new story row and cannot be reused so we continue after this if
+                    }
                 }
-                else if ( convertView != null ){  // and: groupPosition == 0
+                else if ( convertView != null && ((LinearLayout) convertView).getChildAt( 0 ) instanceof TextView){
+                          // and: groupPosition == 0
                     ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
                     ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                             R.drawable.altourism_hcc_story_new );
                     convertView.setPadding( 0, 0, 0, 12 );
                     return convertView;
                 }
+                else { // convertView is a story row but we need the add new story view here so continue after this if
+                }
+
 
                 LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);

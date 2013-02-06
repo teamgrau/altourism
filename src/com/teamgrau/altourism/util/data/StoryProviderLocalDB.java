@@ -22,7 +22,9 @@ public class StoryProviderLocalDB implements StoryProvider {
 
     // define the columns to return on a POI Query
     String[] POIProjection = {
-            DBDefinition.POI.COLUMN_NAME_Geschichte
+            DBDefinition.POI.COLUMN_NAME_Geschichte,
+            DBDefinition.POI.COLUMN_NAME_Lat,
+            DBDefinition.POI.COLUMN_NAME_Lng
     };
 
 
@@ -76,13 +78,13 @@ public class StoryProviderLocalDB implements StoryProvider {
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
         String sortOrder = DBDefinition.PositionEntry._ID + " ASC";
         String selection =
-                DBDefinition.POI.COLUMN_NAME_Lat + " = " + position.getLatitude() + " AND " +
-                        DBDefinition.POI.COLUMN_NAME_Lng + " = " + position.getLongitude();
+                DBDefinition.POI.COLUMN_NAME_Lat + " == " + position.getLatitude() + " AND " +
+                        DBDefinition.POI.COLUMN_NAME_Lng + " == " + position.getLongitude();
 
         Cursor c = db.query(
                 DBDefinition.POI.TABLE_NAME,    // The table to query
                 POIProjection,                  // The columns to return
-                selection,                                // The columns for the WHERE clause
+                null,                                // The columns for the WHERE clause
                 null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -93,9 +95,10 @@ public class StoryProviderLocalDB implements StoryProvider {
         c.moveToFirst();
         POI poi = new POI("test Title", position);
         int n = c.getCount();
-        Log.d("Altourism beta", "stories got: " + n);
+        Log.d("Altourism beta", "stories got: " + n + "\n" + position.getLatitude() + ","+position.getLongitude());
         String text;
         for (int i = 1; i <= n; ++i) {
+            Log.d("Altourism beta", "Lat: "+String.valueOf(c.getDouble(c.getColumnIndex(DBDefinition.POI.COLUMN_NAME_Lat))));
             poi.addStory(new Story(c.getString(c.getColumnIndex(DBDefinition.POI.COLUMN_NAME_Geschichte))));
             c.moveToNext();       // we can move 1 past the last entry w/o negative effects
         }
