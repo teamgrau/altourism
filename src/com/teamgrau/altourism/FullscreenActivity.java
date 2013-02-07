@@ -50,13 +50,14 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
- * 
+ *
  * @see SystemUiHider
  */
 public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
                    GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener, View.OnClickListener {
+
 
     /**
      * Reference to GoogleMap instance
@@ -148,7 +149,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         ImageButton b = (ImageButton) findViewById ( R.id.tell_story_button );
         b.setOnClickListener ( this );
 
-        findViewById ( R.id.close_bubble ).setOnClickListener ( this );
+        findViewById ( R.id.close_button ).setOnClickListener ( this );
         //findViewById ( R.id.add_story_image ).setOnClickListener ( this );
 
         doBindService ();
@@ -244,7 +245,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Canvas c = new Canvas(bitmap);
 
         GroundOverlayOptions gOO = new GroundOverlayOptions()
-                                        .positionFromBounds(b);
+                .positionFromBounds(b);
 
         /**
          * shortcut for unexplored areas
@@ -397,7 +398,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation( marker.getPosition() );
-        startPoint.offset( 0, -270 ); // vorher: -300
+        startPoint.offset( 0, -330 ); // vorher: -300
         final LatLng startLatLng = proj.fromScreenLocation( startPoint );
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -490,7 +491,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         findViewById( R.id.info_window ).setVisibility ( View.GONE );
     }
 
-    private void render(Marker marker, View view) {
+    private void render( final Marker marker, View view ) {
         String title = marker.getTitle();
         TextView titleUi = ((TextView) view.findViewById( R.id.title ));
         if ( title != null ) {
@@ -501,15 +502,41 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             titleUi.setPaintFlags(titleUi.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             titleUi.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
         } else {
-            titleUi.setText("");
+            titleUi.setText( "" );
         }
+        ImageView ib = (ImageView) view.findViewById( R.id.close_button );
+        ib.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                findViewById( R.id.info_window ).setVisibility( View.GONE );
+            }
+        });
+        ((TextView) view.findViewById( R.id.share_on )).
+                setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
 
+
+        final Marker m = marker;
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
-        ev.setAdapter(new BaseExpandableListAdapter() {
-            final StoryProvider sp = new StoryProviderHardcoded();
-            final List<POI> pois = sp.listPOIs(new Location("Simon"), 0.0);
-            final List<Story> geschichten = pois.get(0).getStories();
+        ev.setAdapter( new BaseExpandableListAdapter() {
+            final StoryProvider sp = new StoryProviderLocalDB( getBaseContext() );
+
+            // insert test stories first
+            StoryArchivist sa = new StoryArchivistLocalDB( getBaseContext() );
+            Location p = new Location( "Simon" );
+            {p.setLongitude(marker.getPosition().longitude);
+                p.setLatitude(marker.getPosition().latitude);
+                sa.storeGeschichte(p,new Story("Die große Granitwanne vor dem Museum stammt aus einem größeren Findling in der Nähe " +
+                        " von Angermünde. Eine ineterssante Geschichte steckt dahinter"));
+                sa.storeGeschichte(p,new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!"));
+                sa.storeGeschichte(p,new Story("Innerhalb einer Stunde treffen sich an der Weltzeituhr ca 100 Gruppen. Zählt bei " +
+                        "einem Kaffee mal mit!"));
+                sa.storeGeschichte(p,new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen."));
+
+            }
+
+            final POI poi = sp.getPOI(p);
+            final List<Story> geschichten = poi.getStories();
 
             @Override
             public int getGroupCount() {
@@ -548,7 +575,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public boolean hasStableIds() {
-                return false;
+                return true;
             }
 
             @Override
@@ -562,17 +589,28 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                                 R.drawable.altourism_hcc_story_open );
                     }
-                    ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( getGroup( groupPosition ).toString());
-                    convertView.setPadding( 0, 0, 0, 3 );
-                    return convertView;
+                    if (((LinearLayout) convertView).getChildAt( 0 ) instanceof LinearLayout ) {
+                        ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(0)).
+                                setText( getGroup( groupPosition ).toString());
+                        ((TextView) ((LinearLayout)((LinearLayout) convertView).getChildAt( 0 )).getChildAt(1)).
+                                setText( "Tags: Grafiti, Urban, Secret" );
+                        convertView.setPadding( 0, 0, 0, 3 );
+                        return convertView;
+                    }
+                    else { // convertView is the add new story row and cannot be reused so we continue after this if
+                    }
                 }
-                else if ( convertView != null ){  // and: groupPosition == 0
+                else if ( convertView != null && ((LinearLayout) convertView).getChildAt( 0 ) instanceof TextView){
+                          // and: groupPosition == 0
                     ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
                     ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                             R.drawable.altourism_hcc_story_new );
-                    convertView.setPadding( 0, 0, 0, 10 );
+                    convertView.setPadding( 0, 0, 0, 12 );
                     return convertView;
                 }
+                else { // convertView is a story row but we need the add new story view here so continue after this if
+                }
+
 
                 LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);
@@ -590,20 +628,40 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
                 tv.setTextColor( 0xffffffff );
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
-
-                tv.setPaddingRelative( 6, 2, 6, 0 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1 )); // same heigth as the expand-arrow
-                //tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1 )); // same heigth as the expand-arrow
+                tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv
                 tv.setBackgroundResource(R.color.black);
 
                 if ( groupPosition == 0 ){
                     tv.setText( R.string.tell_a_new_story_to_this_point );
+                    tv.setPaddingRelative( 6, 2, 6, 6 );
                     iv.setImageResource( R.drawable.altourism_hcc_story_new );
-                    l.setPadding( 0, 0, 0, 10 );
+                    l.setPadding( 0, 0, 0, 12 );
+                    l.addView( tv );
+                    l.addView( iv );
                 }
                 else {
-                    tv.setText( getGroup( groupPosition ).toString() );
+                    LinearLayout tl = new LinearLayout( getBaseContext() );
+                    tl.setBackgroundResource( R.color.black );
+                    tl.setLayoutParams( new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, 1));
+                    tl.setOrientation( LinearLayout.VERTICAL );
+                    tl.setPadding( 6, 2, 6, 6 );
+                    TextView tt = new TextView( getBaseContext() );
+                    tt.setLayoutParams( new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0 ));
+                    tt.setBackgroundResource( R.color.black );
+                    tt.setTextColor( 0xffffffff );
+                    tt.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 24 );
+                    tt.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
+                    tt.setSingleLine( true );
+                    tt.setText( "Tags: Grafiti, Urban, Secret" );
+                    tv.setText( getGroup( groupPosition ).toString());
+                    tl.addView( tv );
+                    tl.addView( tt );
+                    l.addView( tl );
+                    l.addView( iv );
                     if ( ! isExpanded ) {
                         iv.setImageResource( R.drawable.altourism_hcc_story_open );
                     }
@@ -611,10 +669,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         iv.setImageResource( R.drawable.altourism_hcc_story_close );
                     }
                     l.setPadding( 0, 0, 0, 3 );
-                    l.setClickable( false );
                 }
-                l.addView( tv );
-                l.addView( iv );
                 return l;
             }
 
@@ -631,8 +686,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
                 tv.setText( getChild( groupPosition, childPosition ).toString() );
                 tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 15 );
-                tv.setPadding( 0, 3, 0, 50 );
-                tv.setPaddingRelative( 6, 0, 0, 0 );
+                //parent.setPadding( 0, 3, 0, 6 );
+                //tv.setPadding( 0, 3, 0, 50 );
+                tv.setPaddingRelative( 6, 3, 6, 6 );
                 return tv;
             }
 
@@ -645,7 +701,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     @Override
     public void onClick ( View view ) {
-        if ( view.getId () == R.id.close_bubble ) {
+        if ( view.getId () == R.id.close_button ) {
             findViewById ( R.id.info_window ).setVisibility ( View.GONE );
             return;
         }

@@ -36,7 +36,7 @@ public final class DBDefinition {
 
     // Drop statement
     static final String DELETE_ENTRIES_TABLE_POSITIONS =
-            "DROP TABLE IF EXITS " + PositionEntry.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + PositionEntry.TABLE_NAME;
 
 /*
     The table that stores GPS-positions the user has passed
@@ -61,13 +61,13 @@ public final class DBDefinition {
             "CREATE TABLE " + POI.TABLE_NAME + " (" +
                     POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid
                     POI.COLUMN_NAME_Lat + " REAL," +
-                    POI.COLUMN_NAME_Lng + " REAL" +
+                    POI.COLUMN_NAME_Lng + " REAL," +
                     POI.COLUMN_NAME_Geschichte + " TEXT" +
                     ")";
 
     // Drop statement
     static final String DELETE_ENTRIES_TABLE_POIs =
-            "DROP TABLE IF EXITS " + POI.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + POI.TABLE_NAME;
 
 /*
     The table that stores POI's, respective geschichten + their location
