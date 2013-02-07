@@ -133,6 +133,11 @@ public class StoryProviderFoursquare implements StoryProvider {
 
                 for (int i = 0; i < a.length(); i++) {
                     //Log.d ( this.getClass ().getName (), "added " + i + " of " + a.length () + "items to poi list" );
+                    // hack to reduce number of markers
+                    // should be replaced by a reasonable foursquare query attribute
+                    if ( i%3 != 0 ) {
+                        continue;
+                    }
                     o = a.getJSONObject(i);
                     Location l = new Location(STORYPROVIDER_FOURSQUARE);
                     l.setLongitude(Double.parseDouble(o.getJSONObject(FOURSQUARE_JSON_LOCATION)

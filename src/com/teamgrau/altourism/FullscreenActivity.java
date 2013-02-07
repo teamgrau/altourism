@@ -259,7 +259,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         /**
          * TODO: make width dependent on zoom level
          */
-        pathPaint.setStrokeWidth(50); // <- width in pixels
+        pathPaint.setStrokeWidth(100); // <- width in pixels
 
         ListIterator<Point> pIter = pList.listIterator();
         Point prev = pIter.next();
@@ -487,7 +487,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         if ( v.getVisibility () != View.VISIBLE ) {
             v.setVisibility ( View.VISIBLE );
         }
-        ((LinearLayout) findViewById( R.id.info_window )).setVisibility ( View.GONE );
+        findViewById( R.id.info_window ).setVisibility ( View.GONE );
     }
 
     private void render(Marker marker, View view) {
