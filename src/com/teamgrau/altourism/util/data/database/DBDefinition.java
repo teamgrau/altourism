@@ -60,8 +60,8 @@ public final class DBDefinition {
     static final String CREATE_TABLE_POIs_STATEMENT =
             "CREATE TABLE " + POI.TABLE_NAME + " (" +
                     POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid
-                    POI.COLUMN_NAME_Lat + " REAL," +
-                    POI.COLUMN_NAME_Lng + " REAL," +
+                    POI.COLUMN_NAME_Lat + " INTEGER," +
+                    POI.COLUMN_NAME_Lng + " INTEGER," +
                     POI.COLUMN_NAME_Geschichte + " TEXT" +
                     ")";
 

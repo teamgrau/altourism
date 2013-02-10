@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class AltourismDBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 4; // Should be incremented on schema update
+    public static final int DATABASE_VERSION = 6; // Should be incremented on schema update
 
     public AltourismDBHelper(Context context) {
         super(context, DBDefinition.DB_NAME, null, DATABASE_VERSION);
@@ -32,5 +32,13 @@ public class AltourismDBHelper extends SQLiteOpenHelper {
         db.execSQL(DBDefinition.DELETE_ENTRIES_TABLE_POSITIONS);
         db.execSQL(DBDefinition.DELETE_ENTRIES_TABLE_POIs);
         onCreate(db);
+    }
+
+    public static double dbToDouble( long x ){
+        return x / 100000000000000d;
+    }
+
+    public static long DoubleToDB( double x ){
+        return (long) (x * 100000000000000l);
     }
 }

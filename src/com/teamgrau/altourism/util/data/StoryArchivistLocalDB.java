@@ -17,8 +17,8 @@ public class StoryArchivistLocalDB implements StoryArchivist {
 
     AltourismDBHelper AlDBHelper;
 
-    public StoryArchivistLocalDB(Context context) {
-        AlDBHelper = new AltourismDBHelper(context);
+    public StoryArchivistLocalDB( Context context ) {
+        AlDBHelper = new AltourismDBHelper( context );
     }
 
 
@@ -26,9 +26,9 @@ public class StoryArchivistLocalDB implements StoryArchivist {
     public void storeGeschichte(Location position, Story story) {
         // a key-value map for the insert-method
         ContentValues values = new ContentValues();
-        values.put(DBDefinition.POI.COLUMN_NAME_Lat, position.getLatitude());
-        values.put(DBDefinition.POI.COLUMN_NAME_Lng, position.getLongitude());
-        values.put(DBDefinition.POI.COLUMN_NAME_Geschichte, story.getStoryText());
+        values.put( DBDefinition.POI.COLUMN_NAME_Lat, AltourismDBHelper.DoubleToDB( position.getLatitude() ));
+        values.put( DBDefinition.POI.COLUMN_NAME_Lng, AltourismDBHelper.DoubleToDB( position.getLongitude() ));
+        values.put( DBDefinition.POI.COLUMN_NAME_Geschichte, story.getStoryText() );
 
         SQLiteDatabase db = AlDBHelper.getWritableDatabase();
         long newRowId;
