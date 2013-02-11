@@ -600,8 +600,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 }
                 else { // convertView is a story row but we need the add new story view here so continue after this if
                 }
-
-
                 LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);
                 l.setLayoutParams( new AbsListView.LayoutParams(
