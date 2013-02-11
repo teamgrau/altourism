@@ -23,6 +23,7 @@ public class StoryProviderLocalDB implements StoryProvider {
     // define the columns to return on a POI Query
     String[] POIProjection = {
             DBDefinition.POI.COLUMN_NAME_Geschichte,
+            DBDefinition.POI.COLUMN_NAME_Title,
             DBDefinition.POI.COLUMN_NAME_Lat,
             DBDefinition.POI.COLUMN_NAME_Lng };
 
@@ -51,6 +52,7 @@ public class StoryProviderLocalDB implements StoryProvider {
         List<POI> list = new ArrayList<POI>();
         int n = c.getCount();
         String text;
+        String title;
         POI poi;
         Location l;
         double Lat;
@@ -59,11 +61,12 @@ public class StoryProviderLocalDB implements StoryProvider {
             Lat = AltourismDBHelper.dbToDouble( c.getLong( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Lat )));
             Lng = AltourismDBHelper.dbToDouble( c.getLong( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Lng )));
             text = c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Geschichte ));
+            title = c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Title ));
             l = new Location( "Thomas LocationProvider" );
             l.setLatitude( Lat );
             l.setLongitude( Lng );
             poi = new POI("test Title", l );
-            poi.addStory( new Story( text ) );
+            poi.addStory( new Story( text, title ) );
             list.add( poi );
         }
         c.close();
@@ -97,9 +100,11 @@ public class StoryProviderLocalDB implements StoryProvider {
         int n = c.getCount();
         Log.d("Altourism beta", "stories got: " + n + "\n" + position.getLatitude() + "," + position.getLongitude());
         String text;
+        String title;
         for (int i = 1; i <= n; ++i) {
-            Log.d("Altourism beta", "Lat: "+String.valueOf(AltourismDBHelper.dbToDouble(c.getLong(c.getColumnIndex(DBDefinition.POI.COLUMN_NAME_Lat)))));
-            poi.addStory( new Story( c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Geschichte ))));
+            text = c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Geschichte ));
+            title = c.getString( c.getColumnIndex( DBDefinition.POI.COLUMN_NAME_Title ));
+            poi.addStory( new Story( text, title ));
             c.moveToNext();       // we can move 1 past the last entry w/o negative effects
         }
         c.close();

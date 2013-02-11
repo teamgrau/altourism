@@ -54,6 +54,7 @@ public final class DBDefinition {
         public static final String COLUMN_NAME_Lat = "Lat";    // for location
         public static final String COLUMN_NAME_Lng = "Lng";    // for location
         public static final String COLUMN_NAME_Geschichte = "Geschichte";
+        public static final String COLUMN_NAME_Title = "Title";
     }
 
     // Create statement
@@ -62,7 +63,8 @@ public final class DBDefinition {
                     POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid
                     POI.COLUMN_NAME_Lat + " INTEGER," +
                     POI.COLUMN_NAME_Lng + " INTEGER," +
-                    POI.COLUMN_NAME_Geschichte + " TEXT" +
+                    POI.COLUMN_NAME_Geschichte + " TEXT," +
+                    POI.COLUMN_NAME_Title + " TEXT" +
                     ")";
 
     // Drop statement
