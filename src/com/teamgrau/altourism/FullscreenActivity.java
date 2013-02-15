@@ -269,7 +269,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         while (pIter.hasNext()) {
             current = pIter.next();
             c.drawLine(prev.x, prev.y, current.x, current.y, pathPaint);
-            c.drawCircle(prev.x, prev.y, 25, pathPaint);
+            c.drawCircle(prev.x, prev.y, 50, pathPaint);
             prev = current;
         }
         // also the last location need rounded corners :-)
