@@ -54,15 +54,17 @@ public final class DBDefinition {
         public static final String COLUMN_NAME_Lat = "Lat";    // for location
         public static final String COLUMN_NAME_Lng = "Lng";    // for location
         public static final String COLUMN_NAME_Geschichte = "Geschichte";
+        public static final String COLUMN_NAME_Title = "Title";
     }
 
     // Create statement
     static final String CREATE_TABLE_POIs_STATEMENT =
             "CREATE TABLE " + POI.TABLE_NAME + " (" +
                     POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid
-                    POI.COLUMN_NAME_Lat + " REAL," +
-                    POI.COLUMN_NAME_Lng + " REAL," +
-                    POI.COLUMN_NAME_Geschichte + " TEXT" +
+                    POI.COLUMN_NAME_Lat + " INTEGER," +
+                    POI.COLUMN_NAME_Lng + " INTEGER," +
+                    POI.COLUMN_NAME_Geschichte + " TEXT," +
+                    POI.COLUMN_NAME_Title + " TEXT" +
                     ")";
 
     // Drop statement

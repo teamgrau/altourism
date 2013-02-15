@@ -526,16 +526,16 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             Location p = new Location( "Simon" );
             {p.setLongitude(marker.getPosition().longitude);
                 p.setLatitude(marker.getPosition().latitude);
-                sa.storeGeschichte(p,new Story("Die große Granitwanne vor dem Museum stammt aus einem größeren Findling in der Nähe " +
-                        " von Angermünde. Eine ineterssante Geschichte steckt dahinter"));
-                sa.storeGeschichte(p,new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!"));
+                sa.storeGeschichte(p,new Story("Die große Granitwanne vor dem Alten Museum stammt aus einem größeren Findling in der Nähe " +
+                        " von Angermünde. Eine interessante Geschichte steckt dahinter", "Findlings-Wanne"));
+                sa.storeGeschichte(p,new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!", "Berliner Dom ansehen!"));
                 sa.storeGeschichte(p,new Story("Innerhalb einer Stunde treffen sich an der Weltzeituhr ca 100 Gruppen. Zählt bei " +
-                        "einem Kaffee mal mit!"));
-                sa.storeGeschichte(p,new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen."));
+                        "einem Kaffee mal mit!", "Gruppenzählen"));
+                sa.storeGeschichte(p,new Story("Am westlichen Durchgang unter den Schienen am Hackeschen Markt kann man die lustigsten Poster sehen.", "Poster Tour"));
 
             }
 
-            final POI poi = sp.getPOI(p);
+            final POI poi = sp.getPOI( p );
             final List<Story> geschichten = poi.getStories();
 
             @Override
@@ -555,7 +555,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public Object getGroup(int groupPosition) {
-                return geschichten.get( groupPosition-1 ).getStoryText().substring( 0, 20 );
+                return geschichten.get( groupPosition-1 ).getTitle();
             }
 
             @Override
@@ -610,8 +610,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 }
                 else { // convertView is a story row but we need the add new story view here so continue after this if
                 }
-
-
                 LinearLayout l = new LinearLayout( getBaseContext() );
                 l.setOrientation(LinearLayout.HORIZONTAL);
                 l.setLayoutParams( new AbsListView.LayoutParams(

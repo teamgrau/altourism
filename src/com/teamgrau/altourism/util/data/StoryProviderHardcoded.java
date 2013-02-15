@@ -39,19 +39,19 @@ public class StoryProviderHardcoded implements StoryProvider {
         l.setLatitude(52.513609);
         l.setLongitude(13.392119);
         POI poi = new POI("Gendarmenmarkt", l);
-        poi.addStory(new Story("Auch andere tolle Sachen passieren hier"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt"));
+        poi.addStory(new Story("Auch andere tolle Sachen passieren hier", "Sachen"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
+        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
         l.setLatitude(52.517396);
         l.setLongitude(13.398385);
         poi = new POI("Humboldt Uni", l);
-        poi.addStory(new Story("Gegenüber am Reiterstandbild kann man wirklich interessante 'Gravierungen' auf dem Sockel lesen"));
+        poi.addStory(new Story("Gegenüber am Reiterstandbild kann man wirklich interessante 'Gravierungen' auf dem Sockel lesen", "Reiter"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
@@ -59,21 +59,21 @@ public class StoryProviderHardcoded implements StoryProvider {
         l.setLongitude(13.398385);
         poi = new POI("Altes Museum", l);
         poi.addStory(new Story("Die große Granitwanne vor dem Museum stammt aus einem größeren Findling in der Nähe " +
-                " von Angermünde. Eine ineterssante Geschichte steckt dahinter"));
+                " von Angermünde. Eine interessante Geschichte steckt dahinter", "Granitwanne"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
         l.setLatitude(52.518806);
         l.setLongitude(13.400531);
         poi = new POI("Deutscher Dom", l);
-        poi.addStory(new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!"));
+        poi.addStory(new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!", "Dom"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
         l.setLatitude(52.524159);
         l.setLongitude(13.402376);
         poi = new POI("Hackescher Markt", l);
-        poi.addStory(new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen."));
+        poi.addStory(new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen.", "Poster-Tour"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
@@ -81,7 +81,7 @@ public class StoryProviderHardcoded implements StoryProvider {
         l.setLongitude(13.412848);
         poi = new POI("Alexanderplatz", l);
         poi.addStory(new Story("Innerhalb einer Stunde treffen sich an der Weltzeituhr ca 100 Gruppen. Zählt bei " +
-                "einem Kaffee mal mit!"));
+                "einem Kaffee mal mit!", "Gruppen Zählen"));
         geschichten.add(poi);
     }
 
