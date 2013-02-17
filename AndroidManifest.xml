@@ -38,9 +38,6 @@
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
         </activity>
-        <activity
-            android:name="com.teamgrau.altourism.util.AltourismInfoWindowAdapter"
-            />
 
         <service android:name=".LocationService" android:exported="false" />
 

@@ -18,6 +18,8 @@
               android:layout_width="match_parent"
               android:layout_height="400dp"
               android:layout_marginTop="47dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp"
               android:paddingLeft="13dp"
               android:paddingTop="13dp"
               android:paddingBottom="63dp"
