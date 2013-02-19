@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="16" />
 
     <permission
             android:name="com.teamgrau.altourism.permission.MAPS_RECEIVE"
@@ -45,9 +45,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <activity
+        <!--<activity
             android:name="com.teamgrau.altourism.util.AltourismInfoWindowAdapter"
-            />
+            />-->
 
         <service android:name=".LocationService" android:exported="false" />
 

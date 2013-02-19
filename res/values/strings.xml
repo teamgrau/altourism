@@ -31,6 +31,8 @@
     <string name="new_story_body">Type your story here ...</string>
     <string name="tell_a_new_story_to_this_point">Tell a new story to this point</string>
     <string name="share_on">Share on: </string>
+    <string name="welcome_bubble_title">WELCOME TO ALTOURISM\nTHE INTERACTIVE GUIDE</string>
+    <string name="welcome_bubble_text">This is your current position - unveil the map by discovering the area. Go near the marked spots and touch them to open a list with interesting stories.</string>
     <string-array name="layers_array">
         <item>@string/normal</item>
         <item>@string/hybrid</item>

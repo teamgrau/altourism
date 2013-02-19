@@ -6,11 +6,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Configuration;
 import android.graphics.*;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.renderscript.Allocation;
 import android.renderscript.RenderScript;
 import android.text.SpannableString;
@@ -19,21 +19,16 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.*;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
-import com.teamgrau.altourism.util.AltourismInfoWindowAdapter;
 import com.teamgrau.altourism.util.AltourismLocationSource;
 import com.teamgrau.altourism.util.AltourismNewStoryView;
 import com.teamgrau.altourism.util.SystemUiHider;
-
-import android.annotation.TargetApi;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.teamgrau.altourism.util.data.*;
 import com.teamgrau.altourism.util.data.model.POI;
 import com.teamgrau.altourism.util.data.model.Story;
@@ -41,11 +36,6 @@ import com.teamgrau.altourism.util.data.model.Story;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-
-import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
-import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
-import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
-import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -57,7 +47,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         implements GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraChangeListener,
                    GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMarkerDragListener,
                    GoogleMap.OnMapClickListener, OnStoryProviderFinishedListener, View.OnClickListener {
-
 
     /**
      * Reference to GoogleMap instance
@@ -136,9 +125,21 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         setContentView(R.layout.main_view);
 
-        /*TextView title = (TextView) findViewById(R.id.title_bar);
-        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-bold.otf"));
-        title.setPaintFlags(title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);*/
+        TextView title = (TextView) findViewById(R.id.title_bar);
+        title.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
+        title.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
+        TextView welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_title );
+        welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
+        welcomeBubble.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
+        welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_text);
+        welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-light.otf" ));
+        ImageView wbcb = (ImageView) findViewById( R.id.close_welcome_bubble_button );
+        wbcb.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick( View v ) {
+                findViewById( R.id.welcome_bubble ).setVisibility( View.GONE );
+            }
+        });
 
         View v = findViewById ( R.id.menu_contaier );
         v.setVisibility ( View.VISIBLE );
@@ -325,12 +326,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         // Request POIs from story providers
         requestPOIs( mMap.getMyLocation () );
-
-
-        // Setting an info window adapter allows us to change the both the contents and look of the
-        // info window.
-//        mIwa = new AltourismInfoWindowAdapter(this);
-//        mMap.setInfoWindowAdapter(mIwa);
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
         mMap.setOnMarkerClickListener( this );
@@ -601,7 +596,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     }
                 }
                 else if ( convertView != null && ((LinearLayout) convertView).getChildAt( 0 ) instanceof TextView){
-                          // and: groupPosition == 0
+                    // and: groupPosition == 0
                     ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
                     ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                             R.drawable.altourism_hcc_story_new );
@@ -625,7 +620,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 TextView tv = new TextView( getBaseContext() );
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-bold.otf" ));
                 tv.setTextColor( 0xffffffff );
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 24);
+                tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 24 );
                 tv.setLayoutParams( new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1 )); // same heigth as the expand-arrow
                 tv.setSingleLine(true);                                                               // w=1 so spare space is given to tv

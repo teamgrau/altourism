@@ -12,9 +12,17 @@
     <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="wrap_content" android:orientation="vertical">
-        <LinearLayout
-                android:id="@+id/title_bar_container"
-                android:layout_width="match_parent"
+    <LinearLayout
+            android:id="@+id/title_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="horizontal"
+            android:layout_marginLeft="23dp"
+            android:paddingTop="3dp">
+        <TextView
+                style="@style/title_bar"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:orientation="horizontal"
@@ -38,7 +46,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|top"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="47dp"
+            android:layout_marginLeft="19dp"
             android:orientation="vertical"
             android:visibility="invisible">
             <ImageButton
@@ -68,6 +77,7 @@
         </LinearLayout>
     </LinearLayout>
     <include layout="@layout/altourism_info_window" android:id="@+id/info_window" />
+    <include layout="@layout/welcome_bubble" android:id="@+id/welcome_bubble" />
     <GridLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
