@@ -20,14 +20,14 @@
             android:orientation="horizontal"
             android:layout_marginLeft="23dp"
             android:paddingTop="3dp">
-        <TextView
+        <!--<TextView
                 style="@style/title_bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:orientation="horizontal"
                 android:paddingLeft="10dp"
-                android:paddingTop="3dp">
+                android:paddingTop="3dp"/>-->
             <ImageView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"

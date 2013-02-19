@@ -125,12 +125,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         setContentView(R.layout.main_view);
 
-        TextView title = (TextView) findViewById(R.id.title_bar);
-        title.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
-        title.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
+        //TextView title = (TextView) findViewById(R.id.title_bar);
+        //title.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
+        //title.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
+
         TextView welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_title );
         welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
-        welcomeBubble.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
+        welcomeBubble.setPaintFlags( welcomeBubble.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
         welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_text);
         welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-light.otf" ));
         ImageView wbcb = (ImageView) findViewById( R.id.close_welcome_bubble_button );

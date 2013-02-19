@@ -176,7 +176,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             }
             StoryArchivist sa = new StoryArchivistLocalDB ( this );
             sa.storeGeschichte ( new Location ( mLocation ),
-                                 new Story ( body ) );
+                                 new Story ( headline, body ) );
             setResult ( RESULT_OK );
             finish ();
         }
