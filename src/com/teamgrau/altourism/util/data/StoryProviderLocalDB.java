@@ -115,6 +115,6 @@ public class StoryProviderLocalDB implements StoryProvider {
 
     @Override
     public void listPOIs( Location position, double radius, OnStoryProviderFinishedListener l ) {
-        return;
+        l.onStoryProviderFinished ( listPOIs ( position, radius ) );
     }
 }

@@ -71,8 +71,9 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     private RenderScript mRS;
     private ScriptC_invertAlpha mScript;
     private LocationService mBoundService;
-    private LinkedList<StoryProvider> mStoryProviders;
+    private Marker mMarker;
 
+    private LinkedList<StoryProvider> mStoryProviders;
     private boolean mIsBound;
     private ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -170,11 +171,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 menu.setVisibility(menu.getVisibility()==View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
             }
         });
+        findViewById ( R.id.cancelButton ).setOnClickListener ( this );
     }
 
     private void setUpStoryProviders () {
         mStoryProviders = new LinkedList<StoryProvider> (  );
         mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
+        mStoryProviders.add ( new StoryProviderLocalDB ( this ) );
     }
 
     @Override
@@ -247,7 +250,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Canvas c = new Canvas(bitmap);
 
         GroundOverlayOptions gOO = new GroundOverlayOptions()
-                .positionFromBounds(b);
+                .positionFromBounds ( b );
 
         /**
          * shortcut for unexplored areas
@@ -471,10 +474,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             return;
         }
         for (POI p : poiList) {
-            currentMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
-                    .title(p.getTitle())
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.altourism_pov))));
+            currentMarkers.add ( mMap.addMarker ( new MarkerOptions ()
+                    .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
+                    .title ( p.getTitle () )
+                    .icon ( BitmapDescriptorFactory.fromResource ( R.drawable.altourism_pov ) ) ) );
         }
     }
 
@@ -488,7 +491,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     }
 
     private void render( final Marker marker, View view ) {
-        String title = marker.getTitle();
+        String title = marker.getTitle ();
         TextView titleUi = ((TextView) view.findViewById( R.id.title ));
         if ( title != null ) {
             // Spannable string allows us to edit the formatting of the text.
@@ -511,16 +514,19 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 setTypeface(Typeface.createFromAsset(getAssets(), "fonts/miso-light.otf"));
 
 
-        final Marker m = marker;
+        mMarker = marker;
+        final View.OnClickListener clickListener = this;
         // Now we setup the Story list and show it in the InfoWindow
         ExpandableListView ev = (ExpandableListView) view.findViewById(R.id.expandableListView);
         ev.setAdapter( new BaseExpandableListAdapter() {
+
             final StoryProvider sp = new StoryProviderLocalDB( getBaseContext() );
 
             // insert test stories first
             StoryArchivist sa = new StoryArchivistLocalDB( getBaseContext() );
             Location p = new Location( "Simon" );
-            {p.setLongitude(marker.getPosition().longitude);
+            {
+                p.setLongitude(marker.getPosition().longitude);
                 p.setLatitude(marker.getPosition().latitude);
                 sa.storeGeschichte(p,new Story("Die große Granitwanne vor dem Alten Museum stammt aus einem größeren Findling in der Nähe " +
                         " von Angermünde. Eine interessante Geschichte steckt dahinter", "Findlings-Wanne"));
@@ -601,6 +607,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     ((TextView) ((LinearLayout) convertView).getChildAt( 0 )).setText( R.string.tell_a_new_story_to_this_point );
                     ((ImageView) ((LinearLayout) convertView).getChildAt( 1 )).setImageResource(
                             R.drawable.altourism_hcc_story_new );
+
+                    /** pretty dirty but it should do ... */
+                    ((LinearLayout) convertView).getChildAt( 0 ).setOnClickListener ( clickListener );
+                    ((LinearLayout) convertView).getChildAt( 0 ).setId ( R.id.add_story_to_poi );
+                    ((LinearLayout) convertView).getChildAt( 1 ).setOnClickListener ( clickListener );
+                    ((LinearLayout) convertView).getChildAt( 1 ).setId ( R.id.add_story_to_poi );
                     convertView.setPadding( 0, 0, 0, 12 );
                     return convertView;
                 }
@@ -697,13 +709,26 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     public void onClick ( View view ) {
         if ( view.getId () == R.id.close_button ) {
             findViewById ( R.id.info_window ).setVisibility ( View.GONE );
-            return;
-        }
-        //if ( view.getId () == R.id.tell_story_button ) {
+        } else if ( view.getId () == R.id.cancelButton ) {
+            finish ();
+        } else if ( view.getId () == R.id.add_story_to_poi ) {
             Intent newStoryView = new Intent( this, AltourismNewStoryView.class );
+            if ( mMarker==null || mMarker.getPosition ()==null ) {
+                Toast.makeText ( this, "That's embarrassing but something went terribly wrong.", Toast.LENGTH_SHORT );
+                return;
+            }
+            newStoryView.putExtra ( "lat", mMarker.getPosition ().latitude );
+            newStoryView.putExtra ( "lng", mMarker.getPosition ().longitude );
+            startActivity( newStoryView );
+        } else if ( view.getId () == R.id.tell_story_button ) {
+            Intent newStoryView = new Intent( this, AltourismNewStoryView.class );
+            if ( mMap==null || mMap.getMyLocation ()==null ) {
+                Toast.makeText ( this, "We need to wait for a location, please try again soon.", Toast.LENGTH_SHORT );
+                return;
+            }
             newStoryView.putExtra ( "lat", mMap.getMyLocation ().getLatitude () );
             newStoryView.putExtra ( "lng", mMap.getMyLocation ().getLongitude () );
             startActivity( newStoryView );
-        //}
+        }
     }
 }
