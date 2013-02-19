@@ -4,7 +4,7 @@
 void root(uchar4 *v_in) {
     uint32_t* p = (uint32_t*)v_in;
     if (*p == 0x00)
-        *p = 0xcc000000;
+        *p = 0xff000000;
     else
         *v_in = 0x00;
 
