@@ -139,11 +139,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             @Override
             public void onClick( View v ) {
                 findViewById( R.id.welcome_bubble ).setVisibility( View.GONE );
+                findViewById( R.id.menu_contaier ).setVisibility( View.VISIBLE );
             }
         });
 
-        View v = findViewById ( R.id.menu_contaier );
-        v.setVisibility ( View.VISIBLE );
+//        View v = findViewById ( R.id.menu_contaier );
+//        v.setVisibility ( View.VISIBLE );
 
         ActionBar actionBar = getActionBar();
         actionBar.hide();
@@ -345,8 +346,11 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 @Override
                 public void onGlobalLayout() {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
-                    for (Location l : mTracker.getLocations ( 10 )) {
-                        b.include ( new LatLng ( l.getLatitude (), l.getLongitude () ) );
+//                    for (Location l : mTracker.getLocations ( 10 )) {
+//                        b.include ( new LatLng ( l.getLatitude (), l.getLongitude () ) );
+//                    }
+                    for (Marker m : currentMarkers) {
+                        b.include(m.getPosition());
                     }
                     LatLngBounds bounds = b.build();
 
@@ -395,7 +399,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         // Move camera so whole bubble is visible
         Projection proj = mMap.getProjection();
         Point startPoint = proj.toScreenLocation( marker.getPosition() );
-        startPoint.offset( 0, -330 ); // vorher: -300
+        startPoint.offset( 0, -365 );
         final LatLng startLatLng = proj.fromScreenLocation( startPoint );
         CameraPosition camPos = new CameraPosition.Builder()
                 .target(startLatLng)
@@ -506,6 +510,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             @Override
             public void onClick( View v ) {
                 findViewById( R.id.info_window ).setVisibility( View.GONE );
+                findViewById( R.id.menu_contaier ).setVisibility( View.VISIBLE );
             }
         });
         ((TextView) view.findViewById( R.id.share_on )).
