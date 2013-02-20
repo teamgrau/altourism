@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import com.teamgrau.altourism.R;
 import com.teamgrau.altourism.util.data.AltourismLocation;
@@ -26,12 +27,14 @@ import java.util.Date;
 import java.util.LinkedList;
 
 public class AltourismNewStoryView extends Activity implements View.OnClickListener {
-    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+    private static final int CAPTURE_AUDIO_ACTIVITY_REQUEST_CODE = 300;
     private static final int MEDIA_TYPE_IMAGE = 1;
     private static final int MEDIA_TYPE_VIDEO = 2;
+    private static final int MEDIA_TYPE_AUDIO = 3;
 
-    private static LinkedList<Uri> fileUris;
+    private LinkedList<Uri> fileUris;
     private Location mLocation;
 
     @Override
@@ -77,8 +80,8 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         for (Uri fileUri : fileUris ) {
             ImageView i = new ImageView ( this );
             i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
-            Log.d ( "NewStoryView", findViewById ( R.id.ref_layout_view ).getLayoutParams ().toString () );
-            i.setLayoutParams ( findViewById ( R.id.ref_layout_view ).getLayoutParams () );
+            //Log.d ( "NewStoryView", findViewById ( R.id.ref_layout_view ).getLayoutParams ().toString () );
+            //i.setLayoutParams ( findViewById ( R.id.ref_layout_view ).getLayoutParams () );
 
             i.setScaleType ( ImageView.ScaleType.CENTER_CROP );
             i.setVisibility ( View.VISIBLE );
@@ -89,10 +92,16 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         }
     }
 
+    private void handleSmallCameraPhoto(Intent intent) {
+        Bundle extras = intent.getExtras();
+        Bitmap imageBitmap = (Bitmap) extras.get("data");
+        //mImageView.setImageBitmap(mImageBitmap);
+    }
+
     private void setPic( ImageView v, Uri filePath ) {
         // Get the dimensions of the View
-        int targetW = 93; //v.getWidth();
-        int targetH = 90; //v.getHeight();
+        int targetW = v.getWidth();
+        int targetH = v.getHeight();
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -108,7 +117,6 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
-        String imageType = bmOptions.outMimeType;
 
         Bitmap bitmap = BitmapFactory.decodeFile(filePath.toString (), bmOptions);
         v.setImageBitmap(bitmap);
@@ -116,25 +124,45 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // Image captured and saved to fileUri specified in the Intent
-//                Toast.makeText(this, "Image saved to:\n" +
-//                        data.getData(), Toast.LENGTH_LONG).show();
-/*                Bundle extras = data.getExtras();
-                Bitmap thumbnail = (Bitmap) extras.get("data");
-                //mImageView.setImageBitmap(mImageBitmap);
                 //Uri fileUri = fileUris.getLast ();
-                ImageView i = new ImageView ( this );
-                //i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
-                i.setLayoutParams ( new ViewGroup.LayoutParams ( findViewById ( R.id.ref_layout_view ).getLayoutParams () ) );
-                //i.setImageURI ( fileUri );
-                i.setImageBitmap ( thumbnail );
-                i.setScaleType ( ImageView.ScaleType.CENTER_CROP );
-                i.setVisibility ( View.VISIBLE );
+                //getContentResolver().notifyChange(fileUri, null);
+                //ContentResolver cr = getContentResolver();
+                try {
+                    //Bitmap b = android.provider.MediaStore.Images.Media.getBitmap(cr, fileUri);
+                    Bundle extras = data.getExtras();
+                    Bitmap b = (Bitmap) extras.get("data");
 
-                LinearLayout ll = (LinearLayout) findViewById ( R.id.new_story_media_container );
-                ll.addView ( i, ll.getChildCount ()-1 );  */
+                    ImageView i = new ImageView ( this );
+                    i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
+                    i.setLayoutParams ( new ViewGroup.LayoutParams ( findViewById ( R.id.new_story_picture ).getLayoutParams () ) );
+
+                    //setPic ( i, fileUri );
+                    i.setImageBitmap ( b );
+
+                    LinearLayout ll = (LinearLayout) findViewById ( R.id.picture_container );
+                    ll.addView ( i, ll.getChildCount () - 1 );
+                } catch (Exception e) {
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+
+                // Image captured and saved to fileUri specified in the Intent
+                /*Toast.makeText(this, "Image saved to:\n" +
+                        data.getData(), Toast.LENGTH_LONG).show();
+
+                Uri fileUri = fileUris.getLast ();
+                ImageView i = new ImageView ( this );
+                i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
+                i.setLayoutParams ( new ViewGroup.LayoutParams ( findViewById ( R.id.new_story_picture ).getLayoutParams () ) );
+                i.setBackground ( null );
+
+                setPic ( i, fileUri );
+
+                LinearLayout ll = (LinearLayout) findViewById ( R.id.picture_container );
+                ll.addView ( i, ll.getChildCount ()-1 ); */
 
             } else if (resultCode == RESULT_CANCELED) {
                 // User cancelled the image capture
@@ -147,7 +175,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             if (resultCode == RESULT_OK) {
                 // Video captured and saved to fileUri specified in the Intent
                 Toast.makeText(this, "Video saved to:\n" +
-                        data.getData(), Toast.LENGTH_LONG).show();
+                        data.getData(), Toast.LENGTH_LONG).show ();
             } else if (resultCode == RESULT_CANCELED) {
                 // User cancelled the video capture
             } else {
@@ -179,19 +207,33 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
                                  new Story ( headline, body ) );
             setResult ( RESULT_OK );
             finish ();
-        }
-        else if ( view.getId () == R.id.new_story_picture ) {
-            // create Intent to take a picture and return control to the calling application
+        } else if ( view.getId () == R.id.new_story_picture ) {
+            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //Uri fileUri = getOutputMediaFileUri ( MEDIA_TYPE_IMAGE );
+            //fileUris.add ( fileUri );
+            //i.putExtra ( MediaStore.EXTRA_OUTPUT, fileUri );
+            startActivityForResult ( i, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE );
+            /*File f = new File(Environment.getExternalStorageDirectory(),  "photo.jpg");
+            i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+            mUri = Uri.fromFile(f);
+            startActivityForResult(i, TAKE_PICTURE);
+
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);*/
+            /*// create Intent to take a picture and return control to the calling application
             Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
 
             Uri fileUri = getOutputMediaFileUri ( MEDIA_TYPE_IMAGE ); // create a file to save the image
 
             fileUris.add ( fileUri );
 
-            intent.putExtra( MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+            intent.putExtra ( MediaStore.EXTRA_OUTPUT, fileUri);     // set the image file name
 
             // start the image capture Intent
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+            startActivityForResult ( intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE );*/
         }
         else if ( view.getId () == R.id.new_story_movie ) {
             //create new Intent
@@ -202,7 +244,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             fileUris.add ( fileUri );
 
             intent.putExtra ( MediaStore.EXTRA_OUTPUT, fileUri );  // set the image file name
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // set the video image quality to high
+            intent.putExtra( MediaStore.EXTRA_VIDEO_QUALITY, 1 );  // set the video image quality to high
 
             // start the Video Capture Intent
             startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
@@ -229,14 +271,14 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
         // using Environment.getExternalStorageState() before doing this.
 
         File mediaStorageDir = new File( Environment.getExternalStoragePublicDirectory (
-                Environment.DIRECTORY_PICTURES ), "MyCameraApp");
+                Environment.DIRECTORY_PICTURES ), "Altourism beta");
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d ( "MyCameraApp", "failed to create directory" );
+                Log.d ( "Altourism beta", "failed to create directory" );
                 return null;
             }
         }

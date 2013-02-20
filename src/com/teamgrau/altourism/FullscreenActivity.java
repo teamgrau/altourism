@@ -26,7 +26,6 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
-import com.teamgrau.altourism.util.AltourismLocationSource;
 import com.teamgrau.altourism.util.AltourismNewStoryView;
 import com.teamgrau.altourism.util.SystemUiHider;
 import com.teamgrau.altourism.util.data.*;
@@ -346,9 +345,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 @Override
                 public void onGlobalLayout() {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
-                    // TODO:replace by last known locations
-                    for (Marker m : currentMarkers) {
-                        b.include(m.getPosition());
+                    for (Location l : mTracker.getLocations ( 10 )) {
+                        b.include ( new LatLng ( l.getLatitude (), l.getLongitude () ) );
                     }
                     LatLngBounds bounds = b.build();
 
@@ -360,7 +358,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     }
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
 
-                    // not sure if this is the best position but overlay rendering also need sizes
+                    // not sure if this is the best position but overlay rendering also needs sizes
                     refreshOverlay();
                 }
             });
@@ -707,8 +705,10 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     @Override
     public void onClick ( View view ) {
-        if ( view.getId () == R.id.close_button ) {
+        if ( view.getId () == R.id.close_button )  {
             findViewById ( R.id.info_window ).setVisibility ( View.GONE );
+        } else if ( view.getId () == R.id.close_welcome_bubble_button ) {
+            findViewById ( R.id.welcome_bubble ).setVisibility ( View.GONE );
         } else if ( view.getId () == R.id.cancelButton ) {
             finish ();
         } else if ( view.getId () == R.id.add_story_to_poi ) {

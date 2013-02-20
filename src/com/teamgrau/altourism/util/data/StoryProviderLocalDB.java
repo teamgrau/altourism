@@ -38,9 +38,9 @@ public class StoryProviderLocalDB implements StoryProvider {
         SQLiteDatabase db = AlDBHelper.getReadableDatabase();
         String sortOrder = DBDefinition.PositionEntry._ID + " ASC";
         Cursor c = db.query(
-                DBDefinition.POI.TABLE_NAME,    // The table to query
-                POIProjection,                  // The columns to return
-                null,                                // The columns for the WHERE clause
+                DBDefinition.POI.TABLE_NAME,              // The table to query
+                POIProjection,                            // The columns to return
+                null,                                     // The columns for the WHERE clause
                 null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -51,6 +51,7 @@ public class StoryProviderLocalDB implements StoryProvider {
         c.moveToFirst();
         List<POI> list = new ArrayList<POI>();
         int n = c.getCount();
+        Log.d ( "Altourism beta", "providerLocalDB: queried " + n + " stories" );
         String text;
         String title;
         POI poi;
@@ -115,6 +116,7 @@ public class StoryProviderLocalDB implements StoryProvider {
 
     @Override
     public void listPOIs( Location position, double radius, OnStoryProviderFinishedListener l ) {
+        Log.d ( "Altourism beta", "providerLocalDB: start query" );
         l.onStoryProviderFinished ( listPOIs ( position, radius ) );
     }
 }

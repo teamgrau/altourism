@@ -111,17 +111,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent" android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true" android:id="@+id/picture_container">
-                    <ImageView
-                            android:layout_width="93dp"
-                            android:layout_height="100dp"
-                            android:id="@+id/ref_layout_view" android:background="@drawable/altourism_new_story_bubble"
-                            android:layout_marginRight="5dp" android:visibility="gone"/>
                     <ImageButton
                             android:layout_width="93dp"
                             android:layout_height="fill_parent"
                             android:id="@+id/imageButton9" android:background="@drawable/altourism_new_story_bubble"
                             android:src="@android:drawable/ic_menu_gallery" android:minHeight="40dp"
-                            android:layout_marginRight="37dp"/>
+                            />
                 </LinearLayout>
                 <LinearLayout
                         android:orientation="vertical"
@@ -149,7 +144,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="40dp" android:id="@+id/control_container"
                     android:layout_alignParentLeft="true" android:layout_alignParentTop="false"
-                    android:layout_alignParentBottom="true" android:layout_gravity="bottom">
+                    android:layout_alignParentBottom="true" android:layout_gravity="bottom"
+                    android:layout_marginTop="10dp">
                 <ImageButton
                         android:layout_width="40dp"
                         android:layout_height="40dp"
