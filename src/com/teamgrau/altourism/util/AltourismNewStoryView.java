@@ -22,6 +22,7 @@ import com.teamgrau.altourism.util.data.StoryArchivistLocalDB;
 import com.teamgrau.altourism.util.data.model.Story;
 
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -130,23 +131,35 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
                 //Uri fileUri = fileUris.getLast ();
                 //getContentResolver().notifyChange(fileUri, null);
                 //ContentResolver cr = getContentResolver();
+                Bundle extras = data.getExtras();
+                Bitmap b = null;
                 try {
-                    //Bitmap b = android.provider.MediaStore.Images.Media.getBitmap(cr, fileUri);
-                    Bundle extras = data.getExtras();
-                    Bitmap b = (Bitmap) extras.get("data");
-
-                    ImageView i = new ImageView ( this );
-                    i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
-                    i.setLayoutParams ( new ViewGroup.LayoutParams ( findViewById ( R.id.new_story_picture ).getLayoutParams () ) );
-
-                    //setPic ( i, fileUri );
-                    i.setImageBitmap ( b );
-
-                    LinearLayout ll = (LinearLayout) findViewById ( R.id.picture_container );
-                    ll.addView ( i, ll.getChildCount () - 1 );
+                    b = (Bitmap) extras.get("data");
+                    Log.d ( "Altourism beta", "did we take a picture with the camera?!" );
                 } catch (Exception e) {
-                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d ( "Altourism beta", "Exception: " + e.getMessage () );
+                    Log.d ( "Altourism beta", "did we choose a picture from gallery?!" );
+                    try {
+                        InputStream stream = getContentResolver().openInputStream(data.getData());
+                        b = BitmapFactory.decodeStream(stream);
+                        stream.close ();
+                    } catch ( Exception e1 ) {
+                        Log.d ( "Altourism beta", "Exception: " + e.getMessage () );
+                    }
                 }
+
+                if ( b == null ) { return; }
+
+                ImageView i = new ImageView ( this );
+                i.setBackground ( getResources ().getDrawable ( R.drawable.altourism_new_story_bubble ) );
+                i.setLayoutParams ( new ViewGroup.LayoutParams ( findViewById ( R.id.new_story_picture ).getLayoutParams () ) );
+
+                //setPic ( i, fileUri );
+                i.setAdjustViewBounds ( true );
+                i.setImageBitmap ( b );
+
+                LinearLayout ll = (LinearLayout) findViewById ( R.id.picture_container );
+                ll.addView ( i, ll.getChildCount () - 1 );
 
 
                 // Image captured and saved to fileUri specified in the Intent
@@ -203,16 +216,32 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
                 return;
             }
             StoryArchivist sa = new StoryArchivistLocalDB ( this );
-            sa.storeGeschichte ( new Location ( mLocation ),
-                                 new Story ( headline, body ) );
+
+            sa.storeGeschichte ( mLocation, new Story ( headline, body ) );
+            Log.d ( "Altourism beta", "inserting with lat: " + mLocation.getLatitude ()
+                                      + " lng: " + mLocation.getLongitude () );
+
             setResult ( RESULT_OK );
             finish ();
         } else if ( view.getId () == R.id.new_story_picture ) {
-            Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            Intent pickIntent = new Intent();
+            pickIntent.setType("image/*");
+            pickIntent.setAction(Intent.ACTION_GET_CONTENT);
+
+            String pickTitle = "Select or take a new Picture"; // Or get from strings.xml
+            Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
+            chooserIntent.putExtra
+                    (
+                            Intent.EXTRA_INITIAL_INTENTS,
+                            new Intent[] { takePicture }
+                    );
+
             //Uri fileUri = getOutputMediaFileUri ( MEDIA_TYPE_IMAGE );
             //fileUris.add ( fileUri );
             //i.putExtra ( MediaStore.EXTRA_OUTPUT, fileUri );
-            startActivityForResult ( i, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE );
+            startActivityForResult ( chooserIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE );
             /*File f = new File(Environment.getExternalStorageDirectory(),  "photo.jpg");
             i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
             mUri = Uri.fromFile(f);
