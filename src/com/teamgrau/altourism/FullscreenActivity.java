@@ -26,6 +26,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.*;
 import com.teamgrau.altourism.rs.ScriptC_invertAlpha;
+import com.teamgrau.altourism.util.AltourismLocationSource;
 import com.teamgrau.altourism.util.AltourismNewStoryView;
 import com.teamgrau.altourism.util.SystemUiHider;
 import com.teamgrau.altourism.util.data.*;
@@ -175,7 +176,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private void setUpStoryProviders () {
         mStoryProviders = new LinkedList<StoryProvider> (  );
-        mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
+        //mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
         mStoryProviders.add ( new StoryProviderLocalDB ( this ) );
     }
 
@@ -345,8 +346,13 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 @Override
                 public void onGlobalLayout() {
                     LatLngBounds.Builder b = new LatLngBounds.Builder();
-                    for (Location l : mTracker.getLocations ( 10 )) {
-                        b.include ( new LatLng ( l.getLatitude (), l.getLongitude () ) );
+                    //for (Location l : mTracker.getLocations ( 10 )) {
+                    //    b.include ( new LatLng ( l.getLatitude (), l.getLongitude () ) );
+                    //}
+
+                    // TODO:replace by last known locations
+                    for (Marker m : currentMarkers) {
+                        b.include(m.getPosition());
                     }
                     LatLngBounds bounds = b.build();
 
@@ -441,6 +447,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         Log.d ( "Altourism beta", "camera changed" );
+        mMap.clear ();
         refreshOverlay();
         Location l = new Location ( "Cam Location" );
         l.setLatitude ( cameraPosition.target.latitude );

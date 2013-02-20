@@ -135,7 +135,7 @@ public class StoryProviderFoursquare implements StoryProvider {
                     //Log.d ( this.getClass ().getName (), "added " + i + " of " + a.length () + "items to poi list" );
                     // hack to reduce number of markers
                     // should be replaced by a reasonable foursquare query attribute
-                    if ( i%3 != 0 ) {
+                    if ( i%5 != 0 ) {
                         continue;
                     }
                     o = a.getJSONObject(i);
