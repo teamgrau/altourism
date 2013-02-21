@@ -512,7 +512,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
                     .title ( p.getTitle () )
                     .icon ( BitmapDescriptorFactory.fromResource ( R.drawable.altourism_pov ) ) ) );
-            Log.d("Altourism beta", "inserted point: " + currentMarkers.get(currentMarkers.size()-1).getPosition().latitude);
         }
     }
 
@@ -764,8 +763,12 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                 Toast.makeText ( this, "We need to wait for a location, please try again soon.", Toast.LENGTH_SHORT );
                 return;
             }
-            newStoryView.putExtra ( "lat", mMap.getMyLocation ().getLatitude () );
-            newStoryView.putExtra ( "lng", mMap.getMyLocation ().getLongitude () );
+            Marker newMarker = mMap.addMarker ( new MarkerOptions ()
+                    .position ( new LatLng ( mMap.getMyLocation ().getLatitude (), mMap.getMyLocation ().getLongitude () ) )
+                    .title ( "Test Title" ) // TODO: muss noch in der Activity dann auf den echten Titel gesetzt werden!
+                    .icon ( BitmapDescriptorFactory.fromResource ( R.drawable.altourism_pov ) ) );
+            newStoryView.putExtra ( "lat", newMarker.getPosition().latitude );
+            newStoryView.putExtra ( "lng", newMarker.getPosition().longitude );
             startActivity( newStoryView );
         }
     }
