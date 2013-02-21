@@ -14,7 +14,7 @@ import android.util.Log;
 
 public class AltourismDBHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 18; // Should be incremented on schema update
+    public static final int DATABASE_VERSION = 19; // Should be incremented on schema update
 
     public AltourismDBHelper(Context context) {
         super(context, DBDefinition.DB_NAME, null, DATABASE_VERSION);
