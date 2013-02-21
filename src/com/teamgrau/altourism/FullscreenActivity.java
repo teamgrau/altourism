@@ -126,10 +126,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         setContentView(R.layout.main_view);
 
-        //TextView title = (TextView) findViewById(R.id.title_bar);
-        //title.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
-        //title.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
-
         TextView welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_title );
         welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
         welcomeBubble.setPaintFlags( welcomeBubble.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
@@ -156,6 +152,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         findViewById ( R.id.close_button ).setOnClickListener ( this );
 
         doBindService ();
+        insertDummyStories();
 
         setUpMapIfNeeded ();
 
@@ -172,13 +169,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             }
         });
         findViewById ( R.id.cancelButton ).setOnClickListener ( this );
-
-        insertDummyStories();
     }
 
     private void insertDummyStories () {
         StoryArchivist sa = new StoryArchivistLocalDB ( getBaseContext () );
-        Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
+        //Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
+        Location l = new Location ( "DummyLocation" );
+        l.setLatitude( 52.519772029373776 );
+        l.setLongitude( 13.398385047912598 );
         String head = "Gallerie Neurotitan";
         String body = "War hier zum ersten mal während des Pictoplasma Festivals 2012 und habe dort die großartigen Illustrationen von Jean Milch (unbedingt googeln!) gesehen. Aber fast noch besser ist der Buchshop der direkt mit der Galerie verbunden ist. Nach einem kurzen Gespräch mit der freundlichen Kassiererin habe ich dann noch erfahren das hier während der Zeit des Nationalsozialismus jüdischen Familien ein versteck geboten wurde.";
         sa.storeGeschichte ( l, new Story ( body, head ) );
@@ -403,6 +401,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         currentMarkers = new LinkedList<Marker>();
 
         for (POI p : poiList) {
+            Log.d ( "Altourism beta", "Hardcoded: " + p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+
             currentMarkers.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
                     .title(p.getTitle())
@@ -505,12 +505,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             return;
         }
         Log.i ( "Altourism beta", "list of pois length: " + poiList.size () );
-        Log.d ( "Altourism beta", poiList.get ( 0 ).getTitle () + " " + poiList.get ( 0 ).getPosition ().getLatitude () );
         for (POI p : poiList) {
+            Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+
             currentMarkers.add ( mMap.addMarker ( new MarkerOptions ()
                     .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
                     .title ( p.getTitle () )
                     .icon ( BitmapDescriptorFactory.fromResource ( R.drawable.altourism_pov ) ) ) );
+            Log.d("Altourism beta", "inserted point: " + currentMarkers.get(currentMarkers.size()-1).getPosition().latitude);
         }
     }
 

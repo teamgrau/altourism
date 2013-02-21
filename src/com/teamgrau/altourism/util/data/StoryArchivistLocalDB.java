@@ -35,6 +35,7 @@ public class StoryArchivistLocalDB implements StoryArchivist {
         // the second argument null makes the framework insert no row if values is empty
         newRowId = db.insert( DBDefinition.POI.TABLE_NAME, null, values );
         Log.d("Altourism beta", "inserted Story into DB, new rowId is: " + newRowId);
+        Log.d("Altourism beta", "coords: " + position.getLatitude() + " " + AltourismDBHelper.DoubleToDB(position.getLatitude()));
         db.close();
     }
 }
