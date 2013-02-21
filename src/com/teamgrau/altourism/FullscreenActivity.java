@@ -181,26 +181,27 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
         String head = "Gallerie Neurotitan";
         String body = "War hier zum ersten mal während des Pictoplasma Festivals 2012 und habe dort die großartigen Illustrationen von Jean Milch (unbedingt googeln!) gesehen. Aber fast noch besser ist der Buchshop der direkt mit der Galerie verbunden ist. Nach einem kurzen Gespräch mit der freundlichen Kassiererin habe ich dann noch erfahren das hier während der Zeit des Nationalsozialismus jüdischen Familien ein versteck geboten wurde.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Kino Central";
         body = "Wohl das gemütlichste Kino in dem ich je saß! Auf schwarzen Ledersesseln können hier zu einem fairen Preis jede menge Underground und Arthouse Filme angeschaut werden. Meistens in Original Fassung mit Untertiteln.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Café Cinema";
         body = "In meinem ersten Monat in Berlin wurde ich hier von meinem Date versetzt – während sich mein kleines Luftschloss in Rauch auflöste konnte ich von hier aus wunderbar das bunte treiben auf der Straße beobachten. Das obligatorische Eis gab es gleich im Anschluss (war lecker)!";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Hof";
         body = "Bei schlechten Wetter wurde ich vom Shuttlebus, wie alle anderen Touristen direkt vorm Alex ausgespuckt... Hmm, irgendwie hab ich mir Berlin doch anders vorgestellt – nicht so langweilig und trostlos.\n" +
                 "Also folgte ich via Altourism dem nächstbesten Punk. Direkt am Hackeschenmarkt, etwas versteckt zwischen Starbucks und noblen Mode Boutiquen befindet sich das Kino Central.\n" +
                 "An sich ist das schon einen Besuch Wert – aber fast noch interessanter ist der Hinterhof! Voll mit Street Art und Skulpturen lässt sich der letzte Rest vom alternativen Berlin in Mitte genießen! Am besten mit nem leckeren Kaffee vom benachbarten Café Cinema.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
     }
 
     private void setUpStoryProviders () {
         mStoryProviders = new LinkedList<StoryProvider> (  );
-        //mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
+        mStoryProviders.add ( new StoryProviderHardcoded () );
+        mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
         mStoryProviders.add ( new StoryProviderLocalDB ( this ) );
     }
 
@@ -340,25 +341,26 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         return original;
     }
 
-    private void setUpMap() {
+    private void setUpMap () {
 
-        mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled (true);
         mMap.setMapType ( GoogleMap.MAP_TYPE_SATELLITE );
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings ().setMyLocationButtonEnabled (true);
         // Hide the zoom controls as the button panel will cover it.
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings ().setZoomControlsEnabled (false);
+        mMap.getUiSettings ().setRotateGesturesEnabled ( false );
 
         // Add lots of markers to the map.
         // TODO: There comes a time when we won't need static markers anymore
-        addMarkersToMap();
+        addMarkersToMap ();
 
         // Request POIs from story providers
-        requestPOIs( mMap.getMyLocation () );
+        requestPOIs ( mMap.getMyLocation () );
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
-        mMap.setOnMarkerClickListener( this );
-        mMap.setOnInfoWindowClickListener( this );
-        mMap.setOnMarkerDragListener( this );
+        mMap.setOnMarkerClickListener ( this );
+        mMap.setOnInfoWindowClickListener ( this );
+        mMap.setOnMarkerDragListener ( this );
         mMap.setOnMapClickListener ( this );
 
         // Pan to see all markers in view.

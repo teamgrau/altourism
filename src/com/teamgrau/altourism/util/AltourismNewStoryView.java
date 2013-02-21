@@ -217,7 +217,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             }
             StoryArchivist sa = new StoryArchivistLocalDB ( this );
 
-            sa.storeGeschichte ( mLocation, new Story ( headline, body ) );
+            sa.storeGeschichte ( mLocation, new Story ( body, headline ) );
             Log.d ( "Altourism beta", "inserting with lat: " + mLocation.getLatitude ()
                                       + " lng: " + mLocation.getLongitude () );
 
