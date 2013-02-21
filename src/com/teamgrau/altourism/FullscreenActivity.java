@@ -173,10 +173,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private void insertDummyStories () {
         StoryArchivist sa = new StoryArchivistLocalDB ( getBaseContext () );
-        //Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
-        Location l = new Location ( "DummyLocation" );
-        l.setLatitude( 52.519772029373776 );
-        l.setLongitude( 13.398385047912598 );
+        Location l = new AltourismLocation ( "DummyLocation", 52.52455991534191, 13.401819951832294 );
         String head = "Gallerie Neurotitan";
         String body = "War hier zum ersten mal während des Pictoplasma Festivals 2012 und habe dort die großartigen Illustrationen von Jean Milch (unbedingt googeln!) gesehen. Aber fast noch besser ist der Buchshop der direkt mit der Galerie verbunden ist. Nach einem kurzen Gespräch mit der freundlichen Kassiererin habe ich dann noch erfahren das hier während der Zeit des Nationalsozialismus jüdischen Familien ein versteck geboten wurde.";
         sa.storeGeschichte ( l, new Story ( body, head ) );
