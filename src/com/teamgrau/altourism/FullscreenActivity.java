@@ -126,10 +126,6 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
         setContentView(R.layout.main_view);
 
-        //TextView title = (TextView) findViewById(R.id.title_bar);
-        //title.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
-        //title.setPaintFlags( title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
-
         TextView welcomeBubble = (TextView) findViewById( R.id.welcome_bubble_title );
         welcomeBubble.setTypeface( Typeface.createFromAsset( getAssets(), "fonts/miso-bold.otf" ));
         welcomeBubble.setPaintFlags( welcomeBubble.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG );
@@ -156,6 +152,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         findViewById ( R.id.close_button ).setOnClickListener ( this );
 
         doBindService ();
+        insertDummyStories();
 
         setUpMapIfNeeded ();
 
@@ -172,30 +169,31 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             }
         });
         findViewById ( R.id.cancelButton ).setOnClickListener ( this );
-
-        insertDummyStories();
     }
 
     private void insertDummyStories () {
         StoryArchivist sa = new StoryArchivistLocalDB ( getBaseContext () );
-        Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
+        //Location l = new AltourismLocation ( "DummyLocation", 52.52456, 13.40182 );
+        Location l = new Location ( "DummyLocation" );
+        l.setLatitude( 52.519772029373776 );
+        l.setLongitude( 13.398385047912598 );
         String head = "Gallerie Neurotitan";
         String body = "War hier zum ersten mal während des Pictoplasma Festivals 2012 und habe dort die großartigen Illustrationen von Jean Milch (unbedingt googeln!) gesehen. Aber fast noch besser ist der Buchshop der direkt mit der Galerie verbunden ist. Nach einem kurzen Gespräch mit der freundlichen Kassiererin habe ich dann noch erfahren das hier während der Zeit des Nationalsozialismus jüdischen Familien ein versteck geboten wurde.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Kino Central";
         body = "Wohl das gemütlichste Kino in dem ich je saß! Auf schwarzen Ledersesseln können hier zu einem fairen Preis jede menge Underground und Arthouse Filme angeschaut werden. Meistens in Original Fassung mit Untertiteln.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Café Cinema";
         body = "In meinem ersten Monat in Berlin wurde ich hier von meinem Date versetzt – während sich mein kleines Luftschloss in Rauch auflöste konnte ich von hier aus wunderbar das bunte treiben auf der Straße beobachten. Das obligatorische Eis gab es gleich im Anschluss (war lecker)!";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
 
         head = "Hof";
         body = "Bei schlechten Wetter wurde ich vom Shuttlebus, wie alle anderen Touristen direkt vorm Alex ausgespuckt... Hmm, irgendwie hab ich mir Berlin doch anders vorgestellt – nicht so langweilig und trostlos.\n" +
                 "Also folgte ich via Altourism dem nächstbesten Punk. Direkt am Hackeschenmarkt, etwas versteckt zwischen Starbucks und noblen Mode Boutiquen befindet sich das Kino Central.\n" +
                 "An sich ist das schon einen Besuch Wert – aber fast noch interessanter ist der Hinterhof! Voll mit Street Art und Skulpturen lässt sich der letzte Rest vom alternativen Berlin in Mitte genießen! Am besten mit nem leckeren Kaffee vom benachbarten Café Cinema.";
-        sa.storeGeschichte ( l, new Story ( head, body ) );
+        sa.storeGeschichte ( l, new Story ( body, head ) );
     }
 
     private void setUpStoryProviders () {
@@ -401,6 +399,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         currentMarkers = new LinkedList<Marker>();
 
         for (POI p : poiList) {
+            Log.d ( "Altourism beta", "Hardcoded: " + p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+
             currentMarkers.add(mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(p.getPosition().getLatitude(), p.getPosition().getLongitude()))
                     .title(p.getTitle())
@@ -503,12 +503,14 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
             return;
         }
         Log.i ( "Altourism beta", "list of pois length: " + poiList.size () );
-        Log.d ( "Altourism beta", poiList.get ( 0 ).getTitle () + " " + poiList.get ( 0 ).getPosition ().getLatitude () );
         for (POI p : poiList) {
+            Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+
             currentMarkers.add ( mMap.addMarker ( new MarkerOptions ()
                     .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
                     .title ( p.getTitle () )
                     .icon ( BitmapDescriptorFactory.fromResource ( R.drawable.altourism_pov ) ) ) );
+            Log.d("Altourism beta", "inserted point: " + currentMarkers.get(currentMarkers.size()-1).getPosition().latitude);
         }
     }
 
