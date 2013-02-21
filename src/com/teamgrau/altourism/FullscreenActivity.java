@@ -503,7 +503,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         }
         Log.i ( "Altourism beta", "list of pois length: " + poiList.size () );
         for (POI p : poiList) {
-            Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+            //Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
 
             currentMarkers.add ( mMap.addMarker ( new MarkerOptions ()
                     .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
