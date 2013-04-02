@@ -76,6 +76,39 @@ public final class DBDefinition {
     End
 **************************************************************************/
 
+
+    /**
+     * *********************************************************************
+     * The table that stores POI's media
+     * Begin
+     */
+    // table definition
+    public static abstract class Media implements BaseColumns {
+
+        public static final String TABLE_NAME = "Media";
+        public static final String COLUMN_NAME_URI = "URI";
+
+    }
+
+    // Create statement
+    static final String CREATE_TABLE_MEDIA_STATEMENT =
+            "CREATE TABLE " + Media.TABLE_NAME + " (" +
+                    POI.COLUMN_NAME_Lat + " INTEGER," +
+                    POI.COLUMN_NAME_Lng + " INTEGER," +
+                    Media.COLUMN_NAME_URI + " Text" +
+                    " FOREIGN KEY(" + POI.COLUMN_NAME_Lat + ", " + POI.COLUMN_NAME_Lng + ") REFERENCES " +
+                    POI.TABLE_NAME + "(" + POI.COLUMN_NAME_Lat + ", " + POI.COLUMN_NAME_Lng + ")" +
+                    ")";
+
+    // Drop statement
+    static final String DELETE_ENTRIES_TABLE_MEDIA =
+            "DROP TABLE IF EXISTS " + Media.TABLE_NAME;
+
+/*
+    The table that stores POI's media
+    End
+**************************************************************************/
+
     // No one should never ever instantiate this class as all information here is static
     private DBDefinition() {
     }

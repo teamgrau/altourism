@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.net.Uri;
 import android.util.Log;
 import com.teamgrau.altourism.util.data.database.AltourismDBHelper;
 import com.teamgrau.altourism.util.data.database.DBDefinition;
@@ -23,7 +24,7 @@ public class StoryArchivistLocalDB implements StoryArchivist {
 
     @Override
     public void storeGeschichte(Location position, Story story) {
-        // a key-value map for the insert-method
+        // insert storytexts
         ContentValues values = new ContentValues();
         values.put( DBDefinition.POI.COLUMN_NAME_Lat, AltourismDBHelper.DoubleToDB( position.getLatitude() ));
         values.put( DBDefinition.POI.COLUMN_NAME_Lng, AltourismDBHelper.DoubleToDB( position.getLongitude() ));
@@ -36,6 +37,17 @@ public class StoryArchivistLocalDB implements StoryArchivist {
         newRowId = db.insert( DBDefinition.POI.TABLE_NAME, null, values );
         Log.d("Altourism beta", "inserted Story into DB, new rowId is: " + newRowId);
         Log.d("Altourism beta", "coords: " + position.getLatitude() + " " + AltourismDBHelper.DoubleToDB(position.getLatitude()));
+
+        // insert story media
+        values = new ContentValues();
+        for ( Uri uri: story.getMedia() ) {
+            values.put( DBDefinition.POI.COLUMN_NAME_Lat, AltourismDBHelper.DoubleToDB( position.getLatitude() ));
+            values.put( DBDefinition.POI.COLUMN_NAME_Lng, AltourismDBHelper.DoubleToDB( position.getLongitude() ));
+            values.put( DBDefinition.Media.COLUMN_NAME_URI, uri.toString() );
+            newRowId = db.insert( DBDefinition.Media.TABLE_NAME, null, values);
+            Log.d("Altourism beta", "inserted URI for Story into DB, new rowId is: " + newRowId);
+        }
+
         db.close();
     }
 }

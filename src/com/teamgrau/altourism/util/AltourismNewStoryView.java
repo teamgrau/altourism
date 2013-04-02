@@ -283,7 +283,7 @@ public class AltourismNewStoryView extends Activity implements View.OnClickListe
             finish ();
         }
         else {
-            Toast.makeText ( this, "not implemnented yet", Toast.LENGTH_SHORT ).show ();
+            Toast.makeText ( this, "not implemented yet", Toast.LENGTH_SHORT ).show ();
         }
 
 
