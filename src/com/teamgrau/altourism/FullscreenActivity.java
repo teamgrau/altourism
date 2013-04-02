@@ -195,7 +195,8 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
     private void setUpStoryProviders () {
         mStoryProviders = new LinkedList<StoryProvider> (  );
-        //mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
+        mStoryProviders.add ( new StoryProviderHardcoded () );
+        mStoryProviders.add ( new StoryProviderFoursquare ( this ) );
         mStoryProviders.add ( new StoryProviderLocalDB ( this ) );
     }
 
@@ -335,25 +336,26 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         return original;
     }
 
-    private void setUpMap() {
+    private void setUpMap () {
 
-        mMap.setMyLocationEnabled(true);
+        mMap.setMyLocationEnabled (true);
         mMap.setMapType ( GoogleMap.MAP_TYPE_SATELLITE );
-        mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        mMap.getUiSettings ().setMyLocationButtonEnabled (true);
         // Hide the zoom controls as the button panel will cover it.
-        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.getUiSettings ().setZoomControlsEnabled (false);
+        mMap.getUiSettings ().setRotateGesturesEnabled ( false );
 
         // Add lots of markers to the map.
         // TODO: There comes a time when we won't need static markers anymore
-        addMarkersToMap();
+        addMarkersToMap ();
 
         // Request POIs from story providers
-        requestPOIs( mMap.getMyLocation () );
+        requestPOIs ( mMap.getMyLocation () );
 
         // Set listeners for marker events.  See the bottom of this class for their behavior.
-        mMap.setOnMarkerClickListener( this );
-        mMap.setOnInfoWindowClickListener( this );
-        mMap.setOnMarkerDragListener( this );
+        mMap.setOnMarkerClickListener ( this );
+        mMap.setOnInfoWindowClickListener ( this );
+        mMap.setOnMarkerDragListener ( this );
         mMap.setOnMapClickListener ( this );
 
         // Pan to see all markers in view.
@@ -501,7 +503,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
         }
         Log.i ( "Altourism beta", "list of pois length: " + poiList.size () );
         for (POI p : poiList) {
-            Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
+            //Log.d ( "Altourism beta", "wichtig: "+p.getStories ().get(0).getTitle() + " " + p.getPosition ().getLatitude () + " " +p.getPosition ().getLongitude () );
 
             currentMarkers.add ( mMap.addMarker ( new MarkerOptions ()
                     .position ( new LatLng ( p.getPosition ().getLatitude (), p.getPosition ().getLongitude () ) )
