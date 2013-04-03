@@ -60,7 +60,7 @@ public final class DBDefinition {
     // Create statement
     static final String CREATE_TABLE_POIs_STATEMENT =
             "CREATE TABLE " + POI.TABLE_NAME + " (" +
-                    POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid
+                    POI._ID + " INTEGER PRIMARY KEY," +    // Autoincrementing rowid; Will be used to identify stories later
                     POI.COLUMN_NAME_Lat + " INTEGER," +
                     POI.COLUMN_NAME_Lng + " INTEGER," +
                     POI.COLUMN_NAME_Geschichte + " TEXT," +
@@ -93,11 +93,9 @@ public final class DBDefinition {
     // Create statement
     static final String CREATE_TABLE_MEDIA_STATEMENT =
             "CREATE TABLE " + Media.TABLE_NAME + " (" +
-                    POI.COLUMN_NAME_Lat + " INTEGER," +
-                    POI.COLUMN_NAME_Lng + " INTEGER," +
+                    POI._ID + " INTEGER," +                    // identifies the story which the media belongs to
                     Media.COLUMN_NAME_URI + " Text" +
-                    " FOREIGN KEY(" + POI.COLUMN_NAME_Lat + ", " + POI.COLUMN_NAME_Lng + ") REFERENCES " +
-                    POI.TABLE_NAME + "(" + POI.COLUMN_NAME_Lat + ", " + POI.COLUMN_NAME_Lng + ")" +
+                    " FOREIGN KEY(" + POI._ID + ") REFERENCES " + POI.TABLE_NAME + "(" + POI._ID + ")" +
                     ")";
 
     // Drop statement
