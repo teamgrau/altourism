@@ -94,7 +94,7 @@ public final class DBDefinition {
     static final String CREATE_TABLE_MEDIA_STATEMENT =
             "CREATE TABLE " + Media.TABLE_NAME + " (" +
                     POI._ID + " INTEGER," +                    // identifies the story which the media belongs to
-                    Media.COLUMN_NAME_URI + " Text" +
+                    Media.COLUMN_NAME_URI + " TEXT," +
                     " FOREIGN KEY(" + POI._ID + ") REFERENCES " + POI.TABLE_NAME + "(" + POI._ID + ")" +
                     ")";
 

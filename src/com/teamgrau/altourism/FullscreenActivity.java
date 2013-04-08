@@ -594,7 +594,7 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
 
             @Override
             public Object getChild(int groupPosition, int childPosition) {
-                return geschichten.get( groupPosition-1 ).getStoryText();
+                return geschichten.get( groupPosition-1 );
             }
 
             @Override
@@ -717,12 +717,15 @@ public class FullscreenActivity extends android.support.v4.app.FragmentActivity
                     ((TextView) convertView).setText( getChild( groupPosition, childPosition ).toString() );
                     return convertView;
                 }
+                LinearLayout ll = new LinearLayout( getBaseContext() );
+                ll.setOrientation( LinearLayout.HORIZONTAL );
                 TextView tv = new TextView( getBaseContext() );
                 tv.setTypeface( Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/miso-light.otf" ));
                 tv.setTextColor( 0xff000000 );
                 tv.setLayoutParams( new AbsListView.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT ));
-                tv.setText( getChild( groupPosition, childPosition ).toString() );
+                Story story = (Story) getChild( groupPosition, childPosition );
+                tv.setText( story.getStoryText() + story.getMedia().get(0).toString() );
                 tv.setTextSize( TypedValue.COMPLEX_UNIT_DIP, 15 );
                 //parent.setPadding( 0, 3, 0, 6 );
                 //tv.setPadding( 0, 3, 0, 50 );

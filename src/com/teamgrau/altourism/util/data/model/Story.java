@@ -26,6 +26,12 @@ public final class Story {
         this.media = media;
     }
 
+    public Story( String text, String title) {
+        this.text = text;
+        this.title = title;
+        this.media = null;
+    }
+
     public String getStoryText() {
         return text;
     }
