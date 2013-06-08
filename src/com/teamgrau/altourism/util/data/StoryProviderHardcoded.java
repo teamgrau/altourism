@@ -36,52 +36,66 @@ public class StoryProviderHardcoded implements StoryProvider {
         geschichten = new LinkedList<POI>();
 
         Location l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.513609);
-        l.setLongitude(13.392119);
-        POI poi = new POI("Gendarmenmarkt", l);
-        poi.addStory(new Story("Auch andere tolle Sachen passieren hier", "Sachen"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
-        poi.addStory(new Story("Waehrend der Gauklerfestspiele ist die Kirche hier abends mit einem herrlichen Licht angestrahlt", "Gaukler"));
+        l.setLatitude(52.455983);
+        l.setLongitude(13.296985);
+        POI poi = new POI("Institut für Informatik", l);
+        poi.addStory(new Story("Smart Cities", "LNdW"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.517396);
-        l.setLongitude(13.398385);
-        poi = new POI("Humboldt Uni", l);
-        poi.addStory(new Story("Gegenüber am Reiterstandbild kann man wirklich interessante 'Gravierungen' auf dem Sockel lesen", "Reiter"));
+        l.setLatitude(52.456245);
+        l.setLongitude(13.295521);
+        poi = new POI("Fachbereich Physik", l);
+        poi.addStory(new Story("Elektrosmog, Nanomaschinen und das geheimnisvolle Majorana-Teilchen", "LNdW"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.519772);
-        l.setLongitude(13.398385);
-        poi = new POI("Altes Museum", l);
-        poi.addStory(new Story("Die große Granitwanne vor dem Museum stammt aus einem größeren Findling in der Nähe " +
-                " von Angermünde. Eine interessante Geschichte steckt dahinter", "Granitwanne"));
+        l.setLatitude(52.457639);
+        l.setLongitude(13.297078);
+        poi = new POI("Institut für Biologie", l);
+        poi.addStory(new Story("Kleine Gehirne ganz groß", "LNdW"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.518806);
-        l.setLongitude(13.400531);
-        poi = new POI("Deutscher Dom", l);
-        poi.addStory(new Story("Der Dom ist grundsätzlich für Besucher geoeffnet (kostenlos). Mindestens einen Guck wert!", "Dom"));
+        l.setLatitude(52.45159);
+        l.setLongitude(13.289312);
+        poi = new POI("Institut für Ethonologie", l);
+        poi.addStory(new Story("Athropologie der Emotionen", "LNdW"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.524159);
-        l.setLongitude(13.402376);
-        poi = new POI("Hackescher Markt", l);
-        poi.addStory(new Story("Am westlichen Durchgang unter den Schienen kann man die lustigsten Poster sehen.", "Poster-Tour"));
+        l.setLatitude(52.453777);
+        l.setLongitude(13.293628);
+        poi = new POI("Institut für Chemie und Biochemie", l);
+        poi.addStory(new Story("Die vielen leuchtenden Facetten der Chemie", "LNdW"));
         geschichten.add(poi);
 
         l = new Location(THOMAS_LOCATION_PROVIDER);
-        l.setLatitude(52.522201);
-        l.setLongitude(13.412848);
-        poi = new POI("Alexanderplatz", l);
-        poi.addStory(new Story("Innerhalb einer Stunde treffen sich an der Weltzeituhr ca 100 Gruppen. Zählt bei " +
-                "einem Kaffee mal mit!", "Gruppen Zählen"));
+        l.setLatitude(52.456101);
+        l.setLongitude(13.300623);
+        poi = new POI("Institut für Prähistorische Archäologie", l);
+        poi.addStory(new Story("Essen im Topf, Dach über dem Kopf", "LNdW"));
+        geschichten.add(poi);
+
+        l = new Location(THOMAS_LOCATION_PROVIDER);
+        l.setLatitude(52.457945);
+        l.setLongitude(13.301632);
+        poi = new POI("Fachbereich Veterinärmedizin / Institute für Mikrobiologie und Tierseuchen sowie für Tier- und Umwelthygiene", l);
+        poi.addStory(new Story("One Health - Bakterielle Infektionserreger auf ihrer Rundreise zwischen Tier und Mensch", "LNdW"));
+        geschichten.add(poi);
+
+        l = new Location(THOMAS_LOCATION_PROVIDER);
+        l.setLatitude(52.452649);
+        l.setLongitude(13.291136);
+        poi = new POI("Fachbereich Erziehungswissenschaft und Psychologie", l);
+        poi.addStory(new Story("Wie fit ist mein Gehirn", "LNdW"));
+        geschichten.add(poi);
+
+        l = new Location(THOMAS_LOCATION_PROVIDER);
+        l.setLatitude(52.456676);
+        l.setLongitude(52.456676);
+        poi = new POI("Institut für Mathematik", l);
+        poi.addStory(new Story("Mathematik steckt überall drin", "LNdW"));
         geschichten.add(poi);
     }
 
